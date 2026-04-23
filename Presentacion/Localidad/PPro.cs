@@ -12,6 +12,7 @@ namespace Presentacion.Localidad
         ELocPro Ent = new ELocPro();
         NLocPro Neg = new NLocPro();
         NLocReg NegReg = new NLocReg();
+        NLocCom NegCom = new NLocCom();
         public PPro()
         {
             InitializeComponent();

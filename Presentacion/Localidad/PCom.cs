@@ -206,7 +206,7 @@ namespace Presentacion.Localidad
             {
                 CheckIng.CheckState = CheckState.Unchecked;
                 CheckMod.CheckState = CheckState.Unchecked;
-                label7.Text = "Eliminar Región:";
+                label7.Text = "Eliminar Comuna:";
                 TextIngMod.Enabled = false;
                 ButEli.Visible = true;
                 ButEli.Enabled = true;
@@ -221,8 +221,8 @@ namespace Presentacion.Localidad
 
         private void ComboIngModReg_SelectedIndexChanged(object sender, EventArgs e)
         {
-            int IdPro = Convert.ToInt32(ComboIngModReg.SelectedValue);
-            DataTable dt = NegPro.Filtrar(IdPro);
+            int IdReg = Convert.ToInt32(ComboIngModReg.SelectedValue);
+            DataTable dt = NegPro.Filtrar(IdReg);
             ComboIngModPro.DisplayMember = "Nombre";
             ComboIngModPro.ValueMember = "IdPro";
             ComboIngModPro.DataSource = dt;
@@ -255,6 +255,7 @@ namespace Presentacion.Localidad
             string Mensaje = string.Empty;
             Ent.Nombre = TextIngMod.Text;
             Ent.IdPro = Convert.ToInt32(ComboIngModPro.SelectedValue);
+            Ent.IdReg = Convert.ToInt32(ComboIngModReg.SelectedValue);
             if (res == DialogResult.Yes)
             {
                 Respuesta<bool> resultado = NLocCom.Ingresar(Ent);
