@@ -1,0 +1,121 @@
+﻿body {
+    margin: 0;
+    height: 100vh;
+    font-family: 'Poppins', sans-serif;
+    background: linear-gradient(135deg, #1f1c2c, #928dab);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Contenedor principal */
+.registration-form {
+    width: 100%;
+    padding: 20px;
+}
+
+    /* Card glass */
+    .registration-form form {
+        backdrop-filter: blur(15px);
+        background: rgba(255, 255, 255, 0.08);
+        border-radius: 20px;
+        max-width: 420px;
+        margin: auto;
+        padding: 40px 30px;
+        box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+        border: 1px solid rgba(255,255,255,0.2);
+    }
+
+    /* Icono */
+    .registration-form .form-icon {
+        text-align: center;
+        background: linear-gradient(135deg, #ff7eb3, #ff758c);
+        border-radius: 50%;
+        font-size: 30px;
+        color: white;
+        width: 70px;
+        height: 70px;
+        margin: auto;
+        margin-bottom: 25px;
+        line-height: 70px;
+        box-shadow: 0 5px 20px rgba(255, 120, 150, 0.5);
+    }
+
+    /* Inputs */
+    .registration-form .item {
+        width: 100%;
+        margin-bottom: 18px;
+        padding: 12px 15px;
+        border-radius: 10px;
+        border: none;
+        background: rgba(255,255,255,0.15);
+        color: #fff;
+        outline: none;
+        transition: 0.3s;
+    }
+
+        .registration-form .item::placeholder {
+            color: rgba(255,255,255,0.6);
+        }
+
+        .registration-form .item:focus {
+            background: rgba(255,255,255,0.25);
+        }
+
+    /* Botón */
+    .registration-form .create-account {
+        width: 100%;
+        border-radius: 10px;
+        padding: 12px;
+        font-size: 15px;
+        font-weight: bold;
+        background: linear-gradient(135deg, #ff7eb3, #ff758c);
+        border: none;
+        color: white;
+        margin-top: 10px;
+        cursor: pointer;
+        transition: 0.3s;
+    }
+
+        .registration-form .create-account:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(255, 120, 150, 0.5);
+        }
+
+    /* Texto social */
+    .registration-form .social-media {
+        text-align: center;
+        margin-top: 20px;
+        color: rgba(255,255,255,0.7);
+    }
+
+    /* Iconos */
+    .registration-form .social-icons {
+        margin-top: 15px;
+    }
+
+        .registration-form .social-icons a {
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            width: 40px;
+            height: 40px;
+            margin: 0 6px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.15);
+            color: white;
+            text-decoration: none;
+            transition: 0.3s;
+        }
+
+            .registration-form .social-icons a:hover {
+                background: linear-gradient(135deg, #ff7eb3, #ff758c);
+                transform: scale(1.1);
+            }
+
+/* Responsive */
+@media (max-width: 500px) {
+    .registration-form form {
+        padding: 30px 20px;
+    }
+}
