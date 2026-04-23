@@ -1,172 +1,168 @@
 ﻿var table
 $(document).ready(function () {
     cargarDatos();
-});
 
-function cargarDatos() {
+    $('#btnNuevo').on('click', function () {
+        $('#textId').val('0');
+        $('#TextNombre').val('');
+        $('#modalTitle').text('Nueva Región');
+        $('#modalGrid').modal('show');
+    });
 
-    if ($.fn.DataTable.isDataTable('#Grid')) {
-        $('#Grid').DataTable().destroy();
-    }
-    $('#Grid tbody').html('');
-    AjaxGet("../LocRegi.aspx/Obtener",
-        function (response) {
-            $(".card-body").LoadingOverlay("hide");
-            if (response.estado) {
-                $.each(response.objeto, function (i, row) {
-                    $("<tr>").append(
-                        $("<td>").text(i + 1),
-                        $("<td>").text(row.Nombre),
-                        $("<td>").append(
-                            $("<button>").addClass("btn btn-sm btn-primary mr-1").text("Editar").data("ELocReg", row),
-                            $("<button>").addClass("btn btn-sm btn-danger").text("Eliminar").data("ELocReg", row.IdReg)
-                        )
-                    ).appendTo("#Grid tbody");
-                })
+    $('#Grid').on('click', '.btnEditar', function () {
+        var row = $(this).closest('tr');
+        var cells = row.find('td');
+        var idReg = cells.eq(0).text().trim();
+        var nombre = cells.eq(1).text().trim();
+
+        $('#textId').val(idReg);
+        $('#TextNombre').val(nombre);
+        $('#modalTitle').text('Editar Región');
+        $('#modalGrid').modal('show');
+    });
+
+    $('#Grid').on('click', '.btnEliminar', function () {
+        var row = $(this).closest('tr');
+        var cells = row.find('td');
+        var idReg = cells.eq(0).text().trim();
+
+        Swal.fire({
+            title: '¿Estás seguro?',
+            text: 'Esta acción no se puede deshacer',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Sí, eliminar',
+            cancelButtonText: 'Cancelar'
+        }).then(function (result) {
+            if (result.isConfirmed) {
+                $.LoadingOverlay('show');
+                $.ajax({
+                    type: 'POST',
+                    url: 'LocRegi.aspx/Eliminar',
+                    data: JSON.stringify({ IdReg: parseInt(idReg) }),
+                    contentType: 'application/json; charset=utf-8',
+                    dataType: 'json',
+                    success: function (data) {
+                        $.LoadingOverlay('hide');
+                        if (data.d.estado) {
+                            Swal.fire('Éxito', 'Región eliminada correctamente', 'success');
+                            cargarDatos();
+                        } else {
+                            Swal.fire('Error', data.d.valor || 'No se pudo eliminar', 'error');
+                        }
+                    },
+                    error: function () {
+                        $.LoadingOverlay('hide');
+                        Swal.fire('Error', 'Error en la eliminación', 'error');
+                    }
+                });
             }
-            table = $('#Grid').DataTable({
-                responsive: true
-            });
-        },
-        function () {
-            $(".card-body").LoadingOverlay("hide");
-        },
-        function () {
-            $(".card-body").LoadingOverlay("show");
-        })
-}
-
-$('#TextIngMod').on('input', function () {
-    // Convertir a Title Case
-    var text = $(this).val();
-    var titleCasedText = text.replace(/\w\S*/g, function (txt) {
-        return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
+        });
     });
 
-    // Obtener la posición actual del cursor
-    var cursorPosition = this.selectionStart;
-
-    // Establecer el texto convertido en el campo de texto
-    $(this).val(titleCasedText);
-
-    // Restaurar la posición del cursor al final del texto
-    this.setSelectionRange(cursorPosition, cursorPosition);
-});
-
-$('#TextIngMod').on('keypress', function (event) {
-    // Verificar si la tecla presionada es un dígito
-    if (event.key >= '0' && event.key <= '9') {
-        event.preventDefault();
-        alert('Solo se permiten letras.');
-    }
-});
-
-$('#Grid tbody').on('click', 'button[class="btn btn-sm btn-primary mr-1"]', function () {
-
-    var model = $(this).data("ELocReg")
-    $("#textId").val(model.IdReg);
-    $("#TextIngMod").val(model.Nombre);
-    $('#modalGrid').modal('show');
-})
-
-$('#btnNuevo').on('click', function () {
-
-    $("#textId").val(0);
-    $("#TextIngMod").val("");
-    $('#modalGrid').modal('show');
-})
-
-$('#btnGuardarCambios').on('click', function () {
-    var camposvacios = false;
-    var fields = $(".model").serializeArray();
-    $.each(fields, function (i, field) {
-        if (!field.value) {
-            camposvacios = true;
-            return false;
+    $('#btnGuardarCambios').on('click', function () {
+        if (!validarFormulario()) {
+            return;
         }
-    });
-    if (!camposvacios) {
 
-        var request = {
+        var idReg = parseInt($('#textId').val());
+        var nombre = $('#TextNombre').val().trim();
+
+        $.LoadingOverlay('show');
+
+        var operacion = idReg === 0 ? 'Ingresar' : 'Actualizar';
+        var datos = {
             obj: {
-                IdReg: parseInt($("#textId").val()),
-                Nombre: $("#TextIngMod").val(),
+                IdReg: idReg,
+                Nombre: nombre
             }
-        }
-        if (parseInt($("#textId").val()) == 0) {
+        };
 
-            AjaxPost("../LocRegi.aspx/Ingresar", JSON.stringify(request),
-                function (response) {
-                    $(".modal-body").LoadingOverlay("hide");
-                    if (response.estado) {
-                        cargarDatos();
-                        $('#modalGrid').modal('hide');
-                        swal("Ingreso fue realizado correctamente")
-                    } else {
-                        swal("oops!", "Seleccione un registro valido", "warning")
-                    }
-                },
-                function () {
-                    $(".modal-body").LoadingOverlay("hide");
-                },
-                function () {
-                    $(".modal-body").LoadingOverlay("show");
-                })
-        } else {
-            AjaxPost("../LocRegi.aspx/Actualizar", JSON.stringify(request),
-                function (response) {
-                    $(".modal-body").LoadingOverlay("hide");
-                    if (response.estado) {
-                        cargarDatos();
-                        $('#modalGrid').modal('hide');
-                        swal("Actualización fue realizado correctamente")
-                    } else {
-                        swal("oops!", "Seleccione un registro valido", "warning")
-                    }
-                },
-                function () {
-                    $(".modal-body").LoadingOverlay("hide");
-                },
-                function () {
-                    $(".modal-body").LoadingOverlay("show");
-                })
-        }
-    } else {
-        swal("Mensaje", "Es necesario completar todos los campos", "warning")
-    }
-})
-$('#Grid tbody').on('click', 'button[class="btn btn-sm btn-danger"]', function () {
-
-    var request = { IdReg: String($(this).data("ELocReg")) };
-    console.log("Request data: ", request);
-    swal({
-        title: "Mensaje",
-        text: "¿Está seguro realizar la eliminación?",
-        type: "warning",
-        showCancelButton: true,
-        confirmButtonColor: '#DD6B55',
-        cancelButtonColor: '#d33',
-        confirmButtonText: "Sí",
-        cancelButtonText: "No",
-        closeOnConfirm: false,
-    }, function () {
-        console.log("Confirm clicked");
-
-        AjaxPost("../LocRegi.aspx/Eliminar", JSON.stringify(request),
-            function (response) {
-                console.log("Response received: ", response);
-                if (response.estado) {
+        $.ajax({
+            type: 'POST',
+            url: 'LocRegi.aspx/' + operacion,
+            data: JSON.stringify(datos),
+            contentType: 'application/json; charset=utf-8',
+            dataType: 'json',
+            success: function (data) {
+                $.LoadingOverlay('hide');
+                if (data.d.estado) {
+                    Swal.fire('Éxito', operacion === 'Ingresar' ? 'Región ingresada correctamente' : 'Región actualizada correctamente', 'success');
+                    $('#modalGrid').modal('hide');
                     cargarDatos();
-                    swal.close();
                 } else {
-                    swal("Mensaje", "No se pudo eliminar el registro", "warning");
+                    Swal.fire('Error', data.d.valor || 'No se pudo guardar', 'error');
                 }
             },
-            function (error) {
-                console.log("Error: ", error);
-            },
-            function () {
-                console.log("Complete");
-            });
+            error: function () {
+                $.LoadingOverlay('hide');
+                Swal.fire('Error', 'Error al guardar', 'error');
+            }
+        });
     });
+
+    $('#TextNombre').on('input', function () {
+        var text = $(this).val();
+        var titleCasedText = text.replace(/\w\S*/g, function (txt) {
+            return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
+        });
+        $(this).val(titleCasedText);
+    });
+
+    function validarFormulario() {
+        var nombre = $('#TextNombre').val().trim();
+        if (nombre === '') {
+            Swal.fire('Validación', 'El nombre es requerido', 'warning');
+            return false;
+        }
+        return true;
+    }
+
+    function cargarDatos() {
+        $.LoadingOverlay('show');
+        $.ajax({
+            type: 'GET',
+            url: 'LocRegi.aspx/Obtener',
+            dataType: 'json',
+            success: function (data) {
+                $.LoadingOverlay('hide');
+                if (data.d.estado) {
+                    if ($.fn.DataTable.isDataTable('#Grid')) {
+                        $('#Grid').DataTable().destroy();
+                    }
+
+                    var html = '';
+                    $.each(data.d.objeto, function (index, item) {
+                        html += '<tr>';
+                        html += '<td>' + item.IdReg + '</td>';
+                        html += '<td>' + item.Nombre + '</td>';
+                        html += '<td>';
+                        html += '<button class="btn btn-xs btn-info btnEditar" style="padding: 2px 6px; font-size: 11px;"><i class="fas fa-edit"></i></button> ';
+                        html += '<button class="btn btn-xs btn-danger btnEliminar" style="padding: 2px 6px; font-size: 11px;"><i class="fas fa-trash"></i></button>';
+                        html += '</td>';
+                        html += '</tr>';
+                    });
+
+                    $('#Grid tbody').html(html);
+                    $('#totalRegistros').text(data.d.objeto.length);
+
+                    $('#Grid').DataTable({
+                        paging: true,
+                        searching: true,
+                        ordering: true,
+                        lengthMenu: [10, 25, 50],
+                        language: {
+                            url: '//cdn.datatables.net/plug-ins/1.10.19/i18n/Spanish.json'
+                        }
+                    });
+                } else {
+                    Swal.fire('Error', data.d.valor || 'No se pudo cargar', 'error');
+                }
+            },
+            error: function () {
+                $.LoadingOverlay('hide');
+                Swal.fire('Error', 'Error en la carga de datos', 'error');
+            }
+        });
+    }
 });

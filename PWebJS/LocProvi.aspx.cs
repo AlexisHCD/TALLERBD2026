@@ -37,6 +37,25 @@ namespace PWebJS
         }
 
         [WebMethod]
+        [ScriptMethod(ResponseFormat = ResponseFormat.Json, UseHttpGet = true)]
+        public static Respuesta<List<ELocReg>> ObtenerRegiones()
+        {
+            var respuesta = new Respuesta<List<ELocReg>>() { estado = false, objeto = new List<ELocReg>() };
+            try
+            {
+                var lista = new NLocReg().Listar();
+                respuesta.estado = true;
+                respuesta.objeto = lista ?? new List<ELocReg>();
+            }
+            catch (Exception ex)
+            {
+                respuesta.valor = ex.Message;
+            }
+
+            return respuesta;
+        }
+
+        [WebMethod]
         [ScriptMethod(ResponseFormat = ResponseFormat.Json)]
         public static Respuesta<bool> Ingresar(ELocPro obj)
         {
