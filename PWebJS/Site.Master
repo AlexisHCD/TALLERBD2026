@@ -79,9 +79,9 @@
                     <div class="dropdown-divider"></div> <!-- Separador -->
                 </div>
                 <li class="nav-item"><a class="nav-link" runat="server" href="#">/</a></li> 
-                <li class="nav-item"><a class="nav-link" runat="server" href="#">Cliente</a></li> 
+                <li class="nav-item"><a class="nav-link" href="Clientes.aspx">Cliente</a></li> 
                 <li class="nav-item"><a class="nav-link" runat="server" href="#">/</a></li> 
-                <li class="nav-item"><a class="nav-link" runat="server" href="#">Proveedor</a></li>
+                <li class="nav-item"><a class="nav-link" href="Proveedores.aspx">Proveedor</a></li>
                 <li class="nav-item"><a class="nav-link" runat="server" href="#">/</a></li> 
                 <li class="nav-item"><a class="nav-link" runat="server" href="#">Productos</a></li>
                 <li class="nav-item"><a class="nav-link" runat="server" href="#">/</a></li> 

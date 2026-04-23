@@ -2964,15 +2964,30 @@
     <Content Include="Assets\Plugins\Simple_Line_Icons\simple-line-icons.min.css" />
     <Content Include="Assets\Plugins\sweetalert2\sweetalert.css" />
     <Content Include="Assets\Plugins\sweetalert2\sweetalert.js" />
+    <Content Include="Clientes.aspx" />
     <Content Include="css\IniciarSesion\Styles.css" />
     <Content Include="Inicio.aspx" />
+    <Content Include="JS\Clientes.js" />
+    <Content Include="JS\LocComu.js" />
+    <Content Include="JS\LocProvi.js" />
+    <Content Include="JS\LocRegi.js" />
+    <Content Include="JS\Proveedores.js" />
+    <Content Include="JS\Utilidades.js" />
     <Content Include="LocComu.aspx" />
     <Content Include="LocProvi.aspx" />
     <Content Include="LocRegi.aspx" />
     <Content Include="Login.aspx" />
+    <Content Include="Proveedores.aspx" />
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Clientes.aspx.cs">
+      <DependentUpon>Clientes.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Clientes.aspx.designer.cs">
+      <DependentUpon>Clientes.aspx</DependentUpon>
+    </Compile>
     <Compile Include="Inicio.aspx.cs">
       <DependentUpon>Inicio.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -3009,6 +3024,13 @@
       <DependentUpon>Login.aspx</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Proveedores.aspx.cs">
+      <DependentUpon>Proveedores.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Proveedores.aspx.designer.cs">
+      <DependentUpon>Proveedores.aspx</DependentUpon>
+    </Compile>
     <Compile Include="Site.Master.cs">
       <DependentUpon>Site.Master</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
