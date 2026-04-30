@@ -19,6 +19,7 @@
         <script src="Assets/Plugins/Jquery/jquery.3.5.1.min.js"></script>
         <script src="Assets/Plugins/Bootstrap.4.5.2/bootstrap.min.js"></script>
         <script src="Assets/Plugins/Sweetalert2/sweetalert.js"></script>
+        <script src="Assets/Plugins/sweetalert2/swal-compat.js"></script>
         <script src="Assets/Plugins/Fontawesome-free-5.15.1-web/JS/all.js"></script>
 
    
