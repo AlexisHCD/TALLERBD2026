@@ -33,13 +33,13 @@ $(document).ready(function () {
         $('#TextNombre').val(nombre);
         
         // Buscar el IdReg del combo por nombre
-        var idRegValue = $('#ComboReg option:contains("' + region + '")').val();
+        var idRegValue = $('#ComboReg option').filter(function(){ return $(this).text().trim() === region; }).val();
         $('#ComboReg').val(idRegValue);
         
         // Cargar provincias y luego seleccionar
         if (idRegValue) {
             cargarProvincias(idRegValue, function() {
-                var idProValue = $('#ComboPro option:contains("' + provincia + '")').val();
+                var idProValue = $('#ComboPro option').filter(function(){ return $(this).text().trim() === provincia; }).val();
                 $('#ComboPro').val(idProValue);
             });
         }
@@ -65,22 +65,24 @@ $(document).ready(function () {
                 $.LoadingOverlay('show');
                 $.ajax({
                     type: 'POST',
-                    url: 'LocComu.aspx/Eliminar',
+                    url: './LocComu.aspx/Eliminar',
                     data: JSON.stringify({ IdCom: parseInt(idCom) }),
                     contentType: 'application/json; charset=utf-8',
                     dataType: 'json',
                     success: function (data) {
                         $.LoadingOverlay('hide');
-                        if (data.d.estado) {
+                        if (data.d && data.d.estado) {
                             Swal.fire('Éxito', 'Comuna eliminada correctamente', 'success');
                             cargarDatos();
                         } else {
-                            Swal.fire('Error', data.d.valor || 'No se pudo eliminar', 'error');
+                            var msg = (data && data.d && data.d.valor) ? data.d.valor : 'No se pudo eliminar';
+                            Swal.fire('Error', msg, 'error');
                         }
                     },
-                    error: function () {
+                    error: function (xhr, status, err) {
                         $.LoadingOverlay('hide');
-                        Swal.fire('Error', 'Error en la eliminación', 'error');
+                        console.error('Eliminar error', status, err, xhr.responseText);
+                        Swal.fire('Error', 'Error en la eliminación: ' + status, 'error');
                     }
                 });
             }
@@ -111,23 +113,25 @@ $(document).ready(function () {
 
         $.ajax({
             type: 'POST',
-            url: 'LocComu.aspx/' + operacion,
+            url: './LocComu.aspx/' + operacion,
             data: JSON.stringify(datos),
             contentType: 'application/json; charset=utf-8',
             dataType: 'json',
             success: function (data) {
                 $.LoadingOverlay('hide');
-                if (data.d.estado) {
+                if (data.d && data.d.estado) {
                     Swal.fire('Éxito', operacion === 'Ingresar' ? 'Comuna ingresada correctamente' : 'Comuna actualizada correctamente', 'success');
                     $('#modalGrid').modal('hide');
                     cargarDatos();
                 } else {
-                    Swal.fire('Error', data.d.valor || 'No se pudo guardar', 'error');
+                    var msg = (data && data.d && data.d.valor) ? data.d.valor : 'No se pudo guardar';
+                    Swal.fire('Error', msg, 'error');
                 }
             },
-            error: function () {
+            error: function (xhr, status, err) {
                 $.LoadingOverlay('hide');
-                Swal.fire('Error', 'Error al guardar', 'error');
+                console.error('Guardar error', status, err, xhr.responseText);
+                Swal.fire('Error', 'Error al guardar: ' + status, 'error');
             }
         });
     });
@@ -161,18 +165,55 @@ $(document).ready(function () {
     }
 
     function cargarRegiones() {
+        // Try GET first (server allows GET). Use explicit relative path to avoid routing issues.
         $.ajax({
             type: 'GET',
-            url: 'LocComu.aspx/ObtenerRegiones',
+            url: './LocComu.aspx/ObtenerRegiones',
             dataType: 'json',
+            contentType: 'application/json; charset=utf-8',
             success: function (data) {
-                if (data.d.estado) {
+                if (data && data.d && data.d.estado) {
                     var options = '<option value="">-- Seleccione Región --</option>';
                     $.each(data.d.objeto, function (index, item) {
                         options += '<option value="' + item.IdReg + '">' + item.Nombre + '</option>';
                     });
                     $('#ComboReg').html(options);
+                } else {
+                    console.warn('No regiones returned or estado false', data);
+                    // fallback: try POST
+                    cargarRegionesPostFallback();
                 }
+            },
+            error: function (xhr, status, err) {
+                console.error('cargarRegiones GET error', status, err, xhr.responseText);
+                // fallback to POST
+                cargarRegionesPostFallback();
+            }
+        });
+    }
+
+    function cargarRegionesPostFallback() {
+        $.ajax({
+            type: 'POST',
+            url: './LocComu.aspx/ObtenerRegiones',
+            data: '{}',
+            contentType: 'application/json; charset=utf-8',
+            dataType: 'json',
+            success: function (data) {
+                if (data && data.d && data.d.estado) {
+                    var options = '<option value="">-- Seleccione Región --</option>';
+                    $.each(data.d.objeto, function (index, item) {
+                        options += '<option value="' + item.IdReg + '">' + item.Nombre + '</option>';
+                    });
+                    $('#ComboReg').html(options);
+                } else {
+                    console.error('cargarRegiones POST returned no data', data);
+                    Swal.fire('Error', 'No se pudieron cargar las regiones', 'error');
+                }
+            },
+            error: function (xhr, status, err) {
+                console.error('cargarRegiones POST error', status, err, xhr.responseText);
+                Swal.fire('Error', 'Error al cargar regiones: ' + status, 'error');
             }
         });
     }
@@ -180,19 +221,26 @@ $(document).ready(function () {
     function cargarProvincias(idReg, callback) {
         $.ajax({
             type: 'POST',
-            url: 'LocComu.aspx/ObtenerProvincias',
+            url: './LocComu.aspx/ObtenerProvincias',
             data: JSON.stringify({ IdReg: parseInt(idReg) }),
             contentType: 'application/json; charset=utf-8',
             dataType: 'json',
             success: function (data) {
-                if (data.d.estado) {
+                if (data && data.d && data.d.estado) {
                     var options = '<option value="">-- Seleccione Provincia --</option>';
                     $.each(data.d.objeto, function (index, item) {
                         options += '<option value="' + item.IdPro + '">' + item.Nombre + '</option>';
                     });
                     $('#ComboPro').html(options).prop('disabled', false);
                     if (callback) callback();
+                } else {
+                    console.warn('No provincias returned', data);
+                    $('#ComboPro').html('<option value="">-- Seleccione Provincia --</option>').prop('disabled', true);
                 }
+            },
+            error: function (xhr, status, err) {
+                console.error('cargarProvincias error', status, err, xhr.responseText);
+                $('#ComboPro').html('<option value="">-- Seleccione Provincia --</option>').prop('disabled', true);
             }
         });
     }
@@ -201,11 +249,12 @@ $(document).ready(function () {
         $.LoadingOverlay('show');
         $.ajax({
             type: 'GET',
-            url: 'LocComu.aspx/Obtener',
+            url: './LocComu.aspx/Obtener',
             dataType: 'json',
+            contentType: 'application/json; charset=utf-8',
             success: function (data) {
                 $.LoadingOverlay('hide');
-                if (data.d.estado) {
+                if (data && data.d && data.d.estado) {
                     if ($.fn.DataTable.isDataTable('#Grid')) {
                         $('#Grid').DataTable().destroy();
                     }
@@ -237,11 +286,12 @@ $(document).ready(function () {
                         }
                     });
                 } else {
-                    Swal.fire('Error', data.d.valor || 'No se pudo cargar', 'error');
+                    Swal.fire('Error', (data && data.d && data.d.valor) || 'No se pudo cargar', 'error');
                 }
             },
-            error: function () {
+            error: function (xhr, status, err) {
                 $.LoadingOverlay('hide');
+                console.error('cargarDatos error', status, err, xhr.responseText);
                 Swal.fire('Error', 'Error en la carga de datos', 'error');
             }
         });
