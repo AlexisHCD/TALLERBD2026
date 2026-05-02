@@ -76,5 +76,10 @@
         </div>
     </div>
 
-    <script src="JS/LocProvi.js"></script>
+    <div id="debugProvi" class="alert alert-danger mt-2" style="display:none;"></div>
+
+    <script>
+        console.log('LocProvi.aspx loaded');
+    </script>
+    <script src="<%= ResolveUrl("~/JS/LocProvi.js") %>" onerror="console.error('No se pudo cargar JS/LocProvi.js');"></script>
 </asp:Content>

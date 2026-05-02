@@ -6,7 +6,7 @@
         <div class="col-sm-12">
             <div class="card">
                 <div class="card-header">
-                    Información sobre Proveedores
+                    Informacion sobre Proveedores
                 </div>
                 <div class="card-body">
                     <div class="row">
@@ -24,11 +24,11 @@
                                         <th>Nombre</th>
                                         <th>Rut</th>
                                         <th>Comuna</th>
-                                        <th>Dirección</th>
-                                        <th>Teléfono</th>
+                                        <th>Direccion</th>
+                                        <th>Telefono</th>
                                         <th>Email</th>
                                         <th>Giro</th>
-                                        <th>Descripción</th>
+                                        <th>Descripcion</th>
                                         <th>Acciones</th>
                                     </tr>
                                 </thead>
@@ -68,7 +68,7 @@
                         </div>
 
                         <div class="form-group row">
-                            <label class="col-sm-2 col-form-label col-form-label-sm">Región</label>
+                            <label class="col-sm-2 col-form-label col-form-label-sm">Region</label>
                             <div class="col-sm-10">
                                 <select class="form-control form-control-sm model" id="ComboReg" name="Region"></select>
                             </div>
@@ -89,12 +89,12 @@
                         </div>
 
                         <div class="form-group">
-                            <label for="TextDireccion" class="col-form-label">Dirección:</label>
+                            <label for="TextDireccion" class="col-form-label">Direccion:</label>
                             <input type="text" class="form-control form-control-sm model" id="TextDireccion" name="Direccion">
                         </div>
 
                         <div class="form-group">
-                            <label for="TextTelefono" class="col-form-label">Teléfono:</label>
+                            <label for="TextTelefono" class="col-form-label">Telefono:</label>
                             <input type="text" class="form-control form-control-sm model" id="TextTelefono" name="Tel">
                         </div>
 
@@ -109,7 +109,7 @@
                         </div>
 
                         <div class="form-group">
-                            <label for="TextDescr" class="col-form-label">Descripción:</label>
+                            <label for="TextDescr" class="col-form-label">Descripcion:</label>
                             <input type="text" class="form-control form-control-sm model" id="TextDescr" name="Descr">
                         </div>
                     </form>

@@ -46,6 +46,7 @@
     <Compile Include="ELocPro.cs" />
     <Compile Include="ELocReg.cs" />
     <Compile Include="ELogin.cs" />
+    <Compile Include="EProd.cs" />
     <Compile Include="EProv.cs" />
     <Compile Include="EUsua.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

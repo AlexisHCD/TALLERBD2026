@@ -10,6 +10,6 @@ namespace Datos
 
         // Cadena de conexión alternativa comentada, útil para cambiar de entorno rápidamente.
         // Conexion de pc AIEP
-        //public static string Conex = "Data source=.;Initial Catalog=SNet;User ID=SA;Password=LabAiep2024.";
+        //public static string Conex = "Data source=SAANLABPC3102;Initial Catalog=SNet;User ID=SA;Password=LabAiep2026.";
     }
 }

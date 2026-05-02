@@ -2962,6 +2962,7 @@
     <Content Include="Assets\Plugins\loadingoverlay\loadingoverlay.min.js" />
     <Content Include="Assets\Plugins\popper\popper.min.js" />
     <Content Include="Assets\Plugins\Simple_Line_Icons\simple-line-icons.min.css" />
+    <Content Include="Assets\Plugins\sweetalert2\swal-compat.js" />
     <Content Include="Assets\Plugins\sweetalert2\sweetalert.css" />
     <Content Include="Assets\Plugins\sweetalert2\sweetalert.js" />
     <Content Include="Clientes.aspx" />
@@ -2971,12 +2972,14 @@
     <Content Include="JS\LocComu.js" />
     <Content Include="JS\LocProvi.js" />
     <Content Include="JS\LocRegi.js" />
+    <Content Include="JS\Productos.js" />
     <Content Include="JS\Proveedores.js" />
     <Content Include="JS\Utilidades.js" />
     <Content Include="LocComu.aspx" />
     <Content Include="LocProvi.aspx" />
     <Content Include="LocRegi.aspx" />
     <Content Include="Login.aspx" />
+    <Content Include="Productos.aspx" />
     <Content Include="Proveedores.aspx" />
     <Content Include="Web.config" />
   </ItemGroup>
@@ -3022,6 +3025,13 @@
     </Compile>
     <Compile Include="Login.aspx.designer.cs">
       <DependentUpon>Login.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Productos.aspx.cs">
+      <DependentUpon>Productos.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Productos.aspx.designer.cs">
+      <DependentUpon>Productos.aspx</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Proveedores.aspx.cs">

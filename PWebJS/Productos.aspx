@@ -1,4 +1,4 @@
-<%@ Page Title="" Language="C#" MasterPageFile="~/Site.Master" AutoEventWireup="true" CodeBehind="Clientes.aspx.cs" Inherits="PWebJS.Clientes" %>
+<%@ Page Title="" Language="C#" MasterPageFile="~/Site.Master" AutoEventWireup="true" CodeBehind="Productos.aspx.cs" Inherits="PWebJS.Productos" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
@@ -6,7 +6,7 @@
         <div class="col-sm-12">
             <div class="card">
                 <div class="card-header">
-                    Informacion sobre Clientes
+                    Informacion sobre Productos
                 </div>
                 <div class="card-body">
                     <div class="row">
@@ -22,12 +22,12 @@
                                     <tr>
                                         <th>#</th>
                                         <th>Nombre</th>
-                                        <th>Rut</th>
-                                        <th>Comuna</th>
-                                        <th>Direccion</th>
-                                        <th>Telefono</th>
-                                        <th>Email</th>
-                                        <th>Giro</th>
+                                        <th>Fecha de incorporacion</th>
+                                        <th>Cantidad inicial</th>
+                                        <th>Cantidad actual</th>
+                                        <th>Cantidad arrendada</th>
+                                        <th>Total actual</th>
+                                        <th>Valor arriendo</th>
                                         <th>Acciones</th>
                                     </tr>
                                 </thead>
@@ -47,14 +47,14 @@
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">Clientes</h5>
+                    <h5 class="modal-title">Productos</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
                 <div class="modal-body">
                     <form>
-                        <input id="textId" class="model" name="IdP_Cli" value="0" type="hidden" />
+                        <input id="textId" class="model" name="IdProd" value="0" type="hidden" />
 
                         <div class="form-group">
                             <label for="TextNombre" class="col-form-label">Nombre:</label>
@@ -62,49 +62,33 @@
                         </div>
 
                         <div class="form-group">
-                            <label for="TextRut" class="col-form-label">Rut:</label>
-                            <input type="text" class="form-control form-control-sm model" id="TextRut" name="Rut">
-                        </div>
-
-                        <div class="form-group row">
-                            <label class="col-sm-2 col-form-label col-form-label-sm">Region</label>
-                            <div class="col-sm-10">
-                                <select class="form-control form-control-sm model" id="ComboReg" name="Region"></select>
-                            </div>
-                        </div>
-
-                        <div class="form-group row">
-                            <label class="col-sm-2 col-form-label col-form-label-sm">Provincia</label>
-                            <div class="col-sm-10">
-                                <select class="form-control form-control-sm model" id="ComboPro" name="Provincia"></select>
-                            </div>
-                        </div>
-
-                        <div class="form-group row">
-                            <label class="col-sm-2 col-form-label col-form-label-sm">Comuna</label>
-                            <div class="col-sm-10">
-                                <select class="form-control form-control-sm model" id="ComboCom" name="Comuna"></select>
-                            </div>
+                            <label for="TextFInc" class="col-form-label">Fecha de incorporacion:</label>
+                            <input type="text" class="form-control form-control-sm model" id="TextFInc" name="FInc">
                         </div>
 
                         <div class="form-group">
-                            <label for="TextDireccion" class="col-form-label">Direccion:</label>
-                            <input type="text" class="form-control form-control-sm model" id="TextDireccion" name="Direccion">
+                            <label for="TextCInc" class="col-form-label">Cantidad inicial:</label>
+                            <input type="text" class="form-control form-control-sm model" id="TextCInc" name="CInc">
                         </div>
 
                         <div class="form-group">
-                            <label for="TextTelefono" class="col-form-label">Telefono:</label>
-                            <input type="text" class="form-control form-control-sm model" id="TextTelefono" name="Tel">
+                            <label for="TextCAct" class="col-form-label">Cantidad actual:</label>
+                            <input type="text" class="form-control form-control-sm model" id="TextCAct" name="CAct">
                         </div>
 
                         <div class="form-group">
-                            <label for="TextEmail" class="col-form-label">Email:</label>
-                            <input type="text" class="form-control form-control-sm model" id="TextEmail" name="Email">
+                            <label for="TextCArr" class="col-form-label">Cantidad arrendada:</label>
+                            <input type="text" class="form-control form-control-sm model" id="TextCArr" name="CArr">
                         </div>
 
                         <div class="form-group">
-                            <label for="TextGiro" class="col-form-label">Giro:</label>
-                            <input type="text" class="form-control form-control-sm model" id="TextGiro" name="Giro">
+                            <label for="TextTAct" class="col-form-label">Total actual:</label>
+                            <input type="text" class="form-control form-control-sm model" id="TextTAct" name="TAct">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="TextVArr" class="col-form-label">Valor del arriendo:</label>
+                            <input type="text" class="form-control form-control-sm model" id="TextVArr" name="VArr">
                         </div>
                     </form>
                 </div>
@@ -116,5 +100,5 @@
         </div>
     </div>
 
-    <script src="JS/Clientes.js"></script>
+    <script src="JS/Productos.js"></script>
 </asp:Content>

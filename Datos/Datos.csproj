@@ -47,6 +47,7 @@
     <Compile Include="DLocPro.cs" />
     <Compile Include="DLocReg.cs" />
     <Compile Include="DLogin.cs" />
+    <Compile Include="DProd.cs" />
     <Compile Include="DProv.cs" />
     <Compile Include="DUsua.cs" />
     <Compile Include="Parametro.cs" />

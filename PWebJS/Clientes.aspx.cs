@@ -57,15 +57,22 @@ namespace PWebJS
         public static List<ELocPro> ObtenerProvincias(int IdReg)
         {
             var resultado = new List<ELocPro>();
-            var dt = new NLocPro().Filtrar(IdReg);
+            var lista = new NLocPro().Listar();
 
-            foreach (DataRow row in dt.Rows)
+            if (lista != null)
             {
-                resultado.Add(new ELocPro
+                foreach (var item in lista)
                 {
-                    IdPro = GetInt(row, "IdPro"),
-                    Nombre = GetString(row, "Nombre")
-                });
+                    if (item.IdReg == IdReg)
+                    {
+                        resultado.Add(new ELocPro
+                        {
+                            IdPro = item.IdPro,
+                            Nombre = item.Nombre,
+                            IdReg = item.IdReg
+                        });
+                    }
+                }
             }
 
             return resultado;
@@ -76,15 +83,23 @@ namespace PWebJS
         public static List<ELocCom> ObtenerComunas(int IdPro)
         {
             var resultado = new List<ELocCom>();
-            var dt = new NLocCom().Filtrar(IdPro);
+            var lista = new NLocCom().Listar();
 
-            foreach (DataRow row in dt.Rows)
+            if (lista != null)
             {
-                resultado.Add(new ELocCom
+                foreach (var item in lista)
                 {
-                    IdCom = GetInt(row, "IdCom"),
-                    Nombre = GetString(row, "Nombre")
-                });
+                    if (item.IdPro == IdPro)
+                    {
+                        resultado.Add(new ELocCom
+                        {
+                            IdCom = item.IdCom,
+                            Nombre = item.Nombre,
+                            IdPro = item.IdPro,
+                            IdReg = item.IdReg
+                        });
+                    }
+                }
             }
 
             return resultado;
@@ -132,25 +147,5 @@ namespace PWebJS
             }
         }
 
-        private static int GetInt(DataRow row, string columnName)
-        {
-            if (!row.Table.Columns.Contains(columnName) || row[columnName] == DBNull.Value)
-            {
-                return 0;
-            }
-
-            int value;
-            return int.TryParse(row[columnName].ToString(), out value) ? value : 0;
-        }
-
-        private static string GetString(DataRow row, string columnName)
-        {
-            if (!row.Table.Columns.Contains(columnName) || row[columnName] == DBNull.Value)
-            {
-                return string.Empty;
-            }
-
-            return row[columnName].ToString();
-        }
     }
 }

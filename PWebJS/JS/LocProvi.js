@@ -1,7 +1,13 @@
 ﻿var table
 $(document).ready(function () {
-    cargarRegiones();
-    cargarDatos();
+    console.log('LocProvi.js loaded');
+    try {
+        cargarRegiones();
+        cargarDatos();
+    } catch (e) {
+        console.error('LocProvi.cargarDatos exception:', e);
+        $('#debugProvi').text(e.message || e.toString()).show();
+    }
 
     $('#btnNuevo').on('click', function () {
         $('#textId').val('0');
@@ -52,21 +58,58 @@ $(document).ready(function () {
                     dataType: 'json',
                     success: function (data) {
                         $.LoadingOverlay('hide');
-                        if (data.d.estado) {
+                        if (data && data.d && data.d.estado) {
                             Swal.fire('Éxito', 'Provincia eliminada correctamente', 'success');
                             cargarDatos();
+                        } else if (data && data.d) {
+                            Swal.fire('Error', obtenerMensajeEliminacion(data.d.valor, 'provincia'), 'error');
                         } else {
-                            Swal.fire('Error', data.d.valor || 'No se pudo eliminar', 'error');
+                            Swal.fire('Error', obtenerMensajeEliminacion(null, 'provincia'), 'error');
                         }
                     },
-                    error: function () {
+                    error: function (xhr) {
                         $.LoadingOverlay('hide');
-                        Swal.fire('Error', 'Error en la eliminación', 'error');
+                        var mensaje = obtenerMensajeEliminacion(obtenerDetalleError(xhr), 'provincia');
+                        Swal.fire('Error', mensaje, 'error');
                     }
                 });
             }
         });
     });
+
+    function obtenerDetalleError(xhr) {
+        if (!xhr) {
+            return null;
+        }
+
+        if (xhr.responseJSON) {
+            return xhr.responseJSON.Message || xhr.responseJSON.message || xhr.responseJSON.error || null;
+        }
+
+        if (xhr.responseText) {
+            try {
+                var data = JSON.parse(xhr.responseText);
+                return data.Message || data.message || data.error || xhr.responseText;
+            } catch (e) {
+                return xhr.responseText;
+            }
+        }
+
+        return xhr.statusText || null;
+    }
+
+    function obtenerMensajeEliminacion(valor, entidad) {
+        if (!valor) {
+            return 'No se pudo eliminar la ' + entidad + '.';
+        }
+
+        var texto = valor.toString().toLowerCase();
+        if (texto.indexOf('conflicted') !== -1 || texto.indexOf('reference') !== -1 || texto.indexOf('foreign key') !== -1) {
+            return 'No se puede eliminar la ' + entidad + ' porque tiene registros asociados. Elimine primero los registros dependientes.';
+        }
+
+        return valor;
+    }
 
     $('#btnGuardarCambios').on('click', function () {
         if (!validarFormulario()) {
@@ -135,32 +178,45 @@ $(document).ready(function () {
     }
 
     function cargarRegiones() {
+        console.log('LocProvi.cargarRegiones start', { hasAjax: !!$.ajax, hasOverlay: !!$.LoadingOverlay });
         $.ajax({
-            type: 'GET',
-            url: 'LocProvi.aspx/ObtenerRegiones',
+            type: 'POST',
+            url: './LocProvi.aspx/ObtenerRegiones',
+            data: '{}',
+            contentType: 'application/json; charset=utf-8',
             dataType: 'json',
             success: function (data) {
-                if (data.d.estado) {
+                console.log('LocProvi.ObtenerRegiones response:', data);
+                if (data && data.d && data.d.estado) {
                     var options = '<option value="">-- Seleccione Región --</option>';
                     $.each(data.d.objeto, function (index, item) {
                         options += '<option value="' + item.IdReg + '">' + item.Nombre + '</option>';
                     });
                     $('#ComboReg').html(options);
+                    $('#debugProvi').hide().text('');
                 }
             }
         });
     }
 
     function cargarDatos() {
-        $.LoadingOverlay('show');
+        console.log('LocProvi.cargarDatos start', { hasAjax: !!$.ajax, hasOverlay: !!$.LoadingOverlay });
+        if ($.LoadingOverlay) {
+            $.LoadingOverlay('show');
+        }
         $.ajax({
-            type: 'GET',
-            url: 'LocProvi.aspx/Obtener',
+            type: 'POST',
+            url: './LocProvi.aspx/Obtener',
+            data: '{}',
+            contentType: 'application/json; charset=utf-8',
             dataType: 'json',
             success: function (data) {
-                $.LoadingOverlay('hide');
-                if (data.d.estado) {
-                    if ($.fn.DataTable.isDataTable('#Grid')) {
+                if ($.LoadingOverlay) {
+                    $.LoadingOverlay('hide');
+                }
+                console.log('LocProvi.Obtener response:', data);
+                if (data && data.d && data.d.estado) {
+                    if ($.fn.DataTable && $.fn.DataTable.isDataTable('#Grid')) {
                         $('#Grid').DataTable().destroy();
                     }
 
@@ -180,23 +236,57 @@ $(document).ready(function () {
                     $('#Grid tbody').html(html);
                     $('#totalRegistros').text(data.d.objeto.length);
 
-                    $('#Grid').DataTable({
-                        paging: true,
-                        searching: true,
-                        ordering: true,
-                        lengthMenu: [10, 25, 50],
-                        language: {
-                            url: '//cdn.datatables.net/plug-ins/1.10.19/i18n/Spanish.json'
-                        }
-                    });
+                    if ($.fn.DataTable) {
+                        $('#Grid').DataTable({
+                            paging: true,
+                            searching: true,
+                            ordering: true,
+                            lengthMenu: [10, 25, 50],
+                            language: {
+                                url: '//cdn.datatables.net/plug-ins/1.10.19/i18n/Spanish.json'
+                            }
+                        });
+                    }
+                    $('#debugProvi').hide().text('');
+                    $('#debugProvi').hide().text('');
                 } else {
-                    Swal.fire('Error', data.d.valor || 'No se pudo cargar', 'error');
+                    console.error('LocProvi.Obtener response inválida:', data);
+                    var mensaje = (data && data.d && data.d.valor) || JSON.stringify(data) || 'No se pudo cargar';
+                    $('#debugProvi').text(mensaje).show();
+                    Swal.fire('Error', mensaje, 'error');
                 }
             },
-            error: function () {
-                $.LoadingOverlay('hide');
-                Swal.fire('Error', 'Error en la carga de datos', 'error');
+            error: function (xhr, status, err) {
+                if ($.LoadingOverlay) {
+                    $.LoadingOverlay('hide');
+                }
+                console.error('LocProvi.Obtener error:', status, err, xhr.responseText);
+                var mensaje = xhr.responseText || 'Error en la carga de datos';
+                $('#debugProvi').text(mensaje).show();
+                Swal.fire('Error', mensaje, 'error');
+            },
+            complete: function (xhr) {
+                console.log('LocProvi.Obtener status:', xhr.status);
+                if (xhr.status !== 200 && xhr.responseText) {
+                    $('#debugProvi').text(xhr.responseText).show();
+                }
             }
         });
     }
+});
+
+$(document).ajaxError(function (event, xhr, settings, err) {
+    if (settings && settings.url && settings.url.indexOf('LocProvi.aspx') !== -1) {
+        console.error('LocProvi ajaxError:', settings.url, xhr.responseText);
+    }
+});
+
+$(document).ajaxSend(function (event, xhr, settings) {
+    if (settings && settings.url && settings.url.indexOf('LocProvi.aspx') !== -1) {
+        console.log('LocProvi ajaxSend:', settings.url, settings.type);
+    }
+});
+
+window.addEventListener('error', function (event) {
+    console.error('LocProvi window error:', event.message);
 });

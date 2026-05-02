@@ -17,8 +17,8 @@ namespace PWebJS
         {
         }
 
-        [WebMethod]
-        [ScriptMethod(ResponseFormat = ResponseFormat.Json, UseHttpGet = true)]
+        [WebMethod(EnableSession = false)]
+        [ScriptMethod(ResponseFormat = ResponseFormat.Json)]
         public static Respuesta<List<ELocPro>> Obtener()
         {
             var respuesta = new Respuesta<List<ELocPro>>() { estado = false, objeto = new List<ELocPro>() };
@@ -30,14 +30,14 @@ namespace PWebJS
             }
             catch (Exception ex)
             {
-                respuesta.valor = ex.Message;
+                respuesta.valor = ex.ToString();
             }
 
             return respuesta;
         }
 
-        [WebMethod]
-        [ScriptMethod(ResponseFormat = ResponseFormat.Json, UseHttpGet = true)]
+        [WebMethod(EnableSession = false)]
+        [ScriptMethod(ResponseFormat = ResponseFormat.Json)]
         public static Respuesta<List<ELocReg>> ObtenerRegiones()
         {
             var respuesta = new Respuesta<List<ELocReg>>() { estado = false, objeto = new List<ELocReg>() };
@@ -49,7 +49,7 @@ namespace PWebJS
             }
             catch (Exception ex)
             {
-                respuesta.valor = ex.Message;
+                respuesta.valor = ex.ToString();
             }
 
             return respuesta;
@@ -65,7 +65,7 @@ namespace PWebJS
             }
             catch (Exception ex)
             {
-                return new Respuesta<bool>() { estado = false, valor = ex.Message };
+                return new Respuesta<bool>() { estado = false, valor = ex.ToString() };
             }
         }
 
@@ -79,7 +79,7 @@ namespace PWebJS
             }
             catch (Exception ex)
             {
-                return new Respuesta<bool>() { estado = false, valor = ex.Message };
+                return new Respuesta<bool>() { estado = false, valor = ex.ToString() };
             }
         }
 
@@ -93,7 +93,7 @@ namespace PWebJS
             }
             catch (Exception ex)
             {
-                return new Respuesta<bool>() { estado = false, valor = ex.Message };
+                return new Respuesta<bool>() { estado = false, valor = ex.ToString() };
             }
         }
     }

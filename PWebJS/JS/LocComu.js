@@ -71,23 +71,61 @@ $(document).ready(function () {
                     dataType: 'json',
                     success: function (data) {
                         $.LoadingOverlay('hide');
-                        if (data.d && data.d.estado) {
+                        if (data && data.d && data.d.estado) {
                             Swal.fire('Éxito', 'Comuna eliminada correctamente', 'success');
                             cargarDatos();
+                        } else if (data && data.d) {
+                            var msg = obtenerMensajeEliminacion(data.d.valor, 'comuna');
+                            Swal.fire('Error', msg, 'error');
                         } else {
-                            var msg = (data && data.d && data.d.valor) ? data.d.valor : 'No se pudo eliminar';
+                            var msg = obtenerMensajeEliminacion(null, 'comuna');
                             Swal.fire('Error', msg, 'error');
                         }
                     },
                     error: function (xhr, status, err) {
                         $.LoadingOverlay('hide');
                         console.error('Eliminar error', status, err, xhr.responseText);
-                        Swal.fire('Error', 'Error en la eliminación: ' + status, 'error');
+                        var mensaje = obtenerMensajeEliminacion(obtenerDetalleError(xhr), 'comuna');
+                        Swal.fire('Error', mensaje, 'error');
                     }
                 });
             }
         });
     });
+
+    function obtenerDetalleError(xhr) {
+        if (!xhr) {
+            return null;
+        }
+
+        if (xhr.responseJSON) {
+            return xhr.responseJSON.Message || xhr.responseJSON.message || xhr.responseJSON.error || null;
+        }
+
+        if (xhr.responseText) {
+            try {
+                var data = JSON.parse(xhr.responseText);
+                return data.Message || data.message || data.error || xhr.responseText;
+            } catch (e) {
+                return xhr.responseText;
+            }
+        }
+
+        return xhr.statusText || null;
+    }
+
+    function obtenerMensajeEliminacion(valor, entidad) {
+        if (!valor) {
+            return 'No se pudo eliminar la ' + entidad + '.';
+        }
+
+        var texto = valor.toString().toLowerCase();
+        if (texto.indexOf('conflicted') !== -1 || texto.indexOf('reference') !== -1 || texto.indexOf('foreign key') !== -1) {
+            return 'No se puede eliminar la ' + entidad + ' porque tiene registros asociados. Elimine primero los registros dependientes.';
+        }
+
+        return valor;
+    }
 
     $('#btnGuardarCambios').on('click', function () {
         if (!validarFormulario()) {
@@ -165,34 +203,6 @@ $(document).ready(function () {
     }
 
     function cargarRegiones() {
-        // Try GET first (server allows GET). Use explicit relative path to avoid routing issues.
-        $.ajax({
-            type: 'GET',
-            url: './LocComu.aspx/ObtenerRegiones',
-            dataType: 'json',
-            contentType: 'application/json; charset=utf-8',
-            success: function (data) {
-                if (data && data.d && data.d.estado) {
-                    var options = '<option value="">-- Seleccione Región --</option>';
-                    $.each(data.d.objeto, function (index, item) {
-                        options += '<option value="' + item.IdReg + '">' + item.Nombre + '</option>';
-                    });
-                    $('#ComboReg').html(options);
-                } else {
-                    console.warn('No regiones returned or estado false', data);
-                    // fallback: try POST
-                    cargarRegionesPostFallback();
-                }
-            },
-            error: function (xhr, status, err) {
-                console.error('cargarRegiones GET error', status, err, xhr.responseText);
-                // fallback to POST
-                cargarRegionesPostFallback();
-            }
-        });
-    }
-
-    function cargarRegionesPostFallback() {
         $.ajax({
             type: 'POST',
             url: './LocComu.aspx/ObtenerRegiones',
@@ -200,6 +210,7 @@ $(document).ready(function () {
             contentType: 'application/json; charset=utf-8',
             dataType: 'json',
             success: function (data) {
+                console.log('LocComu.ObtenerRegiones response:', data);
                 if (data && data.d && data.d.estado) {
                     var options = '<option value="">-- Seleccione Región --</option>';
                     $.each(data.d.objeto, function (index, item) {
@@ -226,6 +237,7 @@ $(document).ready(function () {
             contentType: 'application/json; charset=utf-8',
             dataType: 'json',
             success: function (data) {
+                console.log('LocComu.ObtenerProvincias response:', data);
                 if (data && data.d && data.d.estado) {
                     var options = '<option value="">-- Seleccione Provincia --</option>';
                     $.each(data.d.objeto, function (index, item) {
@@ -246,16 +258,22 @@ $(document).ready(function () {
     }
 
     function cargarDatos() {
-        $.LoadingOverlay('show');
+        if ($.LoadingOverlay) {
+            $.LoadingOverlay('show');
+        }
         $.ajax({
-            type: 'GET',
+            type: 'POST',
             url: './LocComu.aspx/Obtener',
+            data: '{}',
             dataType: 'json',
             contentType: 'application/json; charset=utf-8',
             success: function (data) {
-                $.LoadingOverlay('hide');
+                if ($.LoadingOverlay) {
+                    $.LoadingOverlay('hide');
+                }
+                console.log('LocComu.Obtener response:', data);
                 if (data && data.d && data.d.estado) {
-                    if ($.fn.DataTable.isDataTable('#Grid')) {
+                    if ($.fn.DataTable && $.fn.DataTable.isDataTable('#Grid')) {
                         $('#Grid').DataTable().destroy();
                     }
 
@@ -276,22 +294,26 @@ $(document).ready(function () {
                     $('#Grid tbody').html(html);
                     $('#totalRegistros').text(data.d.objeto.length);
 
-                    $('#Grid').DataTable({
-                        paging: true,
-                        searching: true,
-                        ordering: true,
-                        lengthMenu: [10, 25, 50],
-                        language: {
-                            url: '//cdn.datatables.net/plug-ins/1.10.19/i18n/Spanish.json'
-                        }
-                    });
+                    if ($.fn.DataTable) {
+                        $('#Grid').DataTable({
+                            paging: true,
+                            searching: true,
+                            ordering: true,
+                            lengthMenu: [10, 25, 50],
+                            language: {
+                                url: '//cdn.datatables.net/plug-ins/1.10.19/i18n/Spanish.json'
+                            }
+                        });
+                    }
                 } else {
                     Swal.fire('Error', (data && data.d && data.d.valor) || 'No se pudo cargar', 'error');
                 }
             },
             error: function (xhr, status, err) {
-                $.LoadingOverlay('hide');
-                console.error('cargarDatos error', status, err, xhr.responseText);
+                if ($.LoadingOverlay) {
+                    $.LoadingOverlay('hide');
+                }
+                console.error('LocComu.Obtener error:', status, err, xhr.responseText);
                 Swal.fire('Error', 'Error en la carga de datos', 'error');
             }
         });

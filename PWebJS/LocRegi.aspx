@@ -69,5 +69,10 @@
         </div>
     </div>
 
-    <script src="JS/LocRegi.js"></script>
+    <div id="debugRegion" class="alert alert-danger mt-2" style="display:none;"></div>
+
+    <script>
+        console.log('LocRegi.aspx loaded');
+    </script>
+    <script src="<%= ResolveUrl("~/JS/LocRegi.js") %>" onerror="console.error('No se pudo cargar JS/LocRegi.js');"></script>
 </asp:Content>

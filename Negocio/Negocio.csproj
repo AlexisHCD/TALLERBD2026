@@ -46,6 +46,7 @@
     <Compile Include="NLocPro.cs" />
     <Compile Include="NLocReg.cs" />
     <Compile Include="NLogin.cs" />
+    <Compile Include="NProd.cs" />
     <Compile Include="NProv.cs" />
     <Compile Include="NUsua.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

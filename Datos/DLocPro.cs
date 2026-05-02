@@ -36,6 +36,18 @@ namespace Datos
         {
             // Crea una lista de provincias para almacenar los resultados devueltos por la base de datos.
             List<ELocPro> Lis = new List<ELocPro>();
+            var regiones = DLocReg.Instancia.Listar();
+            var regionLookup = new Dictionary<int, string>();
+            if (regiones != null)
+            {
+                foreach (var region in regiones)
+                {
+                    if (!regionLookup.ContainsKey(region.IdReg))
+                    {
+                        regionLookup.Add(region.IdReg, region.Nombre);
+                    }
+                }
+            }
             // Configura un bloque using para asegurar que la conexión se cierre de forma automática.
             using (SqlConnection oConexion = new SqlConnection(Conexion.Conex))
             {
@@ -52,13 +64,19 @@ namespace Datos
                     // Itera secuencialmente en el bucle sobre cada registro arrojado.
                     while (dr.Read())
                     {
+                        var idReg = Convert.ToInt32(dr["IdReg"].ToString());
+                        var nombreRegion = dr["NombreRegion"].ToString();
+                        if (regionLookup.TryGetValue(idReg, out var nombreLookup))
+                        {
+                            nombreRegion = nombreLookup;
+                        }
                         // Agrega al listado un nuevo objeto mapeando los datos de base de datos a sus propiedades de clase.
                         Lis.Add(new ELocPro()
                         {
                             IdPro = Convert.ToInt32(dr["IdPro"].ToString()),
                             Nombre = dr["Nombre"].ToString(),
-                            IdReg = Convert.ToInt32(dr["IdReg"].ToString()),
-                            Reg = new ELocReg() { Nombre = dr["NombreRegion"].ToString() },
+                            IdReg = idReg,
+                            Reg = new ELocReg() { IdReg = idReg, Nombre = nombreRegion },
                         });
                     }
                     // Cierra la interfaz de lectura del entorno relacional.
@@ -78,40 +96,26 @@ namespace Datos
         // Método que filtra las provincias según un identificador (ID) y duevelve sus datos en un DataTable.
         public DataTable Filtrar(int Id)
         {
-            // Declaración e inicialización del entorno tabular alojado en memoria para depositar respuesta.
-            DataTable dt = new DataTable();
-            // Colección manual de parámetros que espera el procedimiento.
-            List<Parametro> parametros = new List<Parametro>();
-            try
+            var dt = new DataTable();
+            dt.Columns.Add("IdPro", typeof(int));
+            dt.Columns.Add("Nombre", typeof(string));
+            dt.Columns.Add("IdReg", typeof(int));
+
+            var lista = Listar();
+            if (lista == null)
             {
-                // Ingresa la condición de búsqueda mediante un parámetro "@Id".
-                parametros.Add(new Parametro("@Id", Id));
-                // Estabiliza una conexión local o del ambiente SQL usando los datos por default.
-                using (SqlConnection conexion = new SqlConnection(Conexion.Conex))
-                {
-                    // Llama y acopla el componente de lógica almacenada a su comando.
-                    SqlCommand cmd = new SqlCommand("Fil_Id_LPro", conexion);
-                    cmd.CommandType = CommandType.StoredProcedure;
-                    // Recorre e inserta cada uno de los parámetros recolectados en la colección de List.
-                    foreach (var parametro in parametros)
-                    {
-                        cmd.Parameters.AddWithValue(parametro.Nombre, parametro.Valor);
-                    }
-                    // Usa el intermediario que traduce entre data sets de memoria y scripts ejecutables.
-                    using (SqlDataAdapter da = new SqlDataAdapter(cmd))
-                    {
-                        // Llena y asfalta la información estructural con las ocurrencias y datos obtenidos al DataTable.
-                        da.Fill(dt);
-                    }
-                }
-                // Regresa los datos devueltos en formato crudo.
                 return dt;
             }
-            catch (Exception ex)
+
+            foreach (var item in lista)
             {
-                // Las restricciones capturadas aquí generarán inmediatamente una excepción propagada al origen del llamado.
-                throw ex;
+                if (item.IdReg == Id)
+                {
+                    dt.Rows.Add(item.IdPro, item.Nombre, item.IdReg);
+                }
             }
+
+            return dt;
         }
 
         // Función para ingresar a nivel persistente una nueva Provincia.

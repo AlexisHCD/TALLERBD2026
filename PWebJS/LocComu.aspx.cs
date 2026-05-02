@@ -19,7 +19,7 @@ namespace PWebJS
         }
 
         [WebMethod]
-        [ScriptMethod(ResponseFormat = ResponseFormat.Json, UseHttpGet = true)]
+        [ScriptMethod(ResponseFormat = ResponseFormat.Json)]
         public static Respuesta<List<ELocCom>> Obtener()
         {
             var respuesta = new Respuesta<List<ELocCom>>() { estado = false, objeto = new List<ELocCom>() };
@@ -31,14 +31,14 @@ namespace PWebJS
             }
             catch (Exception ex)
             {
-                respuesta.valor = ex.Message;
+                respuesta.valor = ex.ToString();
             }
 
             return respuesta;
         }
 
         [WebMethod]
-        [ScriptMethod(ResponseFormat = ResponseFormat.Json, UseHttpGet = true)]
+        [ScriptMethod(ResponseFormat = ResponseFormat.Json)]
         public static Respuesta<List<ELocReg>> ObtenerRegiones()
         {
             var respuesta = new Respuesta<List<ELocReg>>() { estado = false, objeto = new List<ELocReg>() };
@@ -50,7 +50,7 @@ namespace PWebJS
             }
             catch (Exception ex)
             {
-                respuesta.valor = ex.Message;
+                respuesta.valor = ex.ToString();
             }
 
             return respuesta;
@@ -63,28 +63,31 @@ namespace PWebJS
             var respuesta = new Respuesta<List<ELocPro>>() { estado = false, objeto = new List<ELocPro>() };
             try
             {
-                DataTable dt = new NLocPro().Filtrar(IdReg);
                 var lista = new List<ELocPro>();
-                
-                if (dt != null && dt.Rows.Count > 0)
+                var provincias = new NLocPro().Listar();
+
+                if (provincias != null)
                 {
-                    foreach (DataRow row in dt.Rows)
+                    foreach (var item in provincias)
                     {
-                        lista.Add(new ELocPro()
+                        if (item.IdReg == IdReg)
                         {
-                            IdPro = GetInt(row, "IdPro"),
-                            Nombre = GetString(row, "Nombre"),
-                            IdReg = GetInt(row, "IdReg")
-                        });
+                            lista.Add(new ELocPro()
+                            {
+                                IdPro = item.IdPro,
+                                Nombre = item.Nombre,
+                                IdReg = item.IdReg
+                            });
+                        }
                     }
                 }
-                
+
                 respuesta.estado = true;
                 respuesta.objeto = lista;
             }
             catch (Exception ex)
             {
-                respuesta.valor = ex.Message;
+                respuesta.valor = ex.ToString();
             }
 
             return respuesta;
@@ -100,7 +103,7 @@ namespace PWebJS
             }
             catch (Exception ex)
             {
-                return new Respuesta<bool>() { estado = false, valor = ex.Message };
+                return new Respuesta<bool>() { estado = false, valor = ex.ToString() };
             }
         }
 
@@ -114,7 +117,7 @@ namespace PWebJS
             }
             catch (Exception ex)
             {
-                return new Respuesta<bool>() { estado = false, valor = ex.Message };
+                return new Respuesta<bool>() { estado = false, valor = ex.ToString() };
             }
         }
 
@@ -128,18 +131,9 @@ namespace PWebJS
             }
             catch (Exception ex)
             {
-                return new Respuesta<bool>() { estado = false, valor = ex.Message };
+                return new Respuesta<bool>() { estado = false, valor = ex.ToString() };
             }
         }
 
-        private static int GetInt(DataRow row, string columnName)
-        {
-            return row[columnName] != DBNull.Value ? Convert.ToInt32(row[columnName]) : 0;
-        }
-
-        private static string GetString(DataRow row, string columnName)
-        {
-            return row[columnName] != DBNull.Value ? row[columnName].ToString() : "";
-        }
     }
 }

@@ -51,17 +51,52 @@ namespace Datos
                     // Ejecuta el procedimiento y recupera los datos devueltos como un DataReader.
                     SqlDataReader dr = cmd.ExecuteReader();
                     // Itera en ciclos a través de cada registro obtenido por el DataReader.
+                    var provincias = DLocPro.Instancia.Listar(); // Obtiene la lista de provincias
+                    var provinciaLookup = new Dictionary<int, ELocPro>(); // Crea un diccionario para el lookup
+                    if (provincias != null) // Verifica si la lista de provincias no es nula
+                    {
+                        foreach (var provincia in provincias) // Itera sobre cada provincia
+                        {
+                            if (!provinciaLookup.ContainsKey(provincia.IdPro)) // Verifica si la provincia ya está en el diccionario
+                            {
+                                provinciaLookup.Add(provincia.IdPro, provincia); // Agrega la provincia al diccionario
+                            }
+                        }
+                    }
+
                     while (dr.Read())
                     {
+                        var idPro = Convert.ToInt32(dr["IdPro"].ToString());
+                        var idReg = Convert.ToInt32(dr["IdReg"].ToString());
+                        var nombreProvincia = dr["NombreProvincia"].ToString();
+                        var nombreRegion = dr["NombreRegion"].ToString();
+
+                        if (provinciaLookup.TryGetValue(idPro, out var provincia))
+                        {
+                            if (!string.IsNullOrWhiteSpace(provincia.Nombre))
+                            {
+                                nombreProvincia = provincia.Nombre;
+                            }
+
+                            if (provincia.Reg != null)
+                            {
+                                idReg = provincia.Reg.IdReg != 0 ? provincia.Reg.IdReg : idReg;
+                                if (!string.IsNullOrWhiteSpace(provincia.Reg.Nombre))
+                                {
+                                    nombreRegion = provincia.Reg.Nombre;
+                                }
+                            }
+                        }
+
                         // Instancia una nueva Comuna, mapea sus datos y la agrega a la lista de retorno.
                         Lis.Add(new ELocCom()
                         {
                             IdCom = Convert.ToInt32(dr["IdCom"].ToString()),
                             Nombre = dr["Nombre"].ToString(),
-                            IdPro = Convert.ToInt32(dr["IdPro"].ToString()),
-                            Pro = new ELocPro() { Nombre = dr["NombreProvincia"].ToString() },
-                            IdReg = Convert.ToInt32(dr["IdReg"].ToString()),
-                            Reg = new ELocReg() { Nombre = dr["NombreRegion"].ToString() },
+                            IdPro = idPro,
+                            Pro = new ELocPro() { IdPro = idPro, Nombre = nombreProvincia },
+                            IdReg = idReg,
+                            Reg = new ELocReg() { IdReg = idReg, Nombre = nombreRegion },
                         });
                     }
                     // Cierra el SqlDataReader una vez se han leído todos los registros.
@@ -81,40 +116,27 @@ namespace Datos
         // Método que filtra comunas dependiendo de un Id y devuelve un formato tabular de datos.
         public DataTable Filtrar(int Id)
         {
-            // Crea una nueva estructura de tabla vacía que almacena los resultados en memoria.
-            DataTable dt = new DataTable();
-            // Inicializa en código una lista genérica que recibirá parámetros customizados.
-            List<Parametro> parametros = new List<Parametro>();
-            try
+            var dt = new DataTable();
+            dt.Columns.Add("IdCom", typeof(int));
+            dt.Columns.Add("Nombre", typeof(string));
+            dt.Columns.Add("IdPro", typeof(int));
+            dt.Columns.Add("IdReg", typeof(int));
+
+            var lista = Listar();
+            if (lista == null)
             {
-                // Se agrega el parámetro Id a la lista de parámetros en modo manual.
-                parametros.Add(new Parametro("@Id", Id));
-                // Abre el contexto de recurso con la conexión SQL.
-                using (SqlConnection conexion = new SqlConnection(Conexion.Conex))
-                {
-                    // Crea un comando con la ruta del procedimiento que actúa como filtro.
-                    SqlCommand cmd = new SqlCommand("Fil_Id_LCom", conexion);
-                    cmd.CommandType = CommandType.StoredProcedure;
-                    // Itera sobre todos los parámetros dinámicamente añadidos y los introduce al comando SQL.
-                    foreach (var parametro in parametros)
-                    {
-                        cmd.Parameters.AddWithValue(parametro.Nombre, parametro.Valor);
-                    }
-                    // SqlDataAdapter hace de conexión intermedia entre comandos y la carga de datos.
-                    using (SqlDataAdapter da = new SqlDataAdapter(cmd))
-                    {
-                        // Llena el DataTable instanciado con la ejecución del script DataAdapter.
-                        da.Fill(dt);
-                    }
-                }
-                // Retorna la colección en formato tabla con cada una de sus filas y columnas asignadas.
                 return dt;
             }
-            catch (Exception ex)
+
+            foreach (var item in lista)
             {
-                // Lanza y escala cualquier excepción de este bloque.
-                throw ex;
+                if (item.IdPro == Id)
+                {
+                    dt.Rows.Add(item.IdCom, item.Nombre, item.IdPro, item.IdReg);
+                }
             }
+
+            return dt;
         }
 
         // Método de ingreso que inserta una nueva Comuna en la base de datos.
