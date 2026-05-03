@@ -31,8 +31,38 @@
             <div class="form-group">
                 <button id="btnIniciarSesion" type="button" class="btn btn-block create-account">Iniciar Sesión</button>
             </div>
+            <div class="form-group">
+                <button id="btnCrearCuenta" type="button" class="btn btn-block btn-secondary">Crear usuario</button>
+            </div>
         </form>
         
+    </div>
+
+    <div class="modal fade" id="modalUsuario" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Crear usuario</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="TextNuevoUsuario" class="col-form-label">Usuario:</label>
+                        <input type="text" class="form-control form-control-sm" id="TextNuevoUsuario" />
+                    </div>
+                    <div class="form-group">
+                        <label for="TextNuevaClave" class="col-form-label">Contraseña:</label>
+                        <input type="password" class="form-control form-control-sm" id="TextNuevaClave" />
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-sm btn-secondary" data-dismiss="modal">Cerrar</button>
+                    <button id="btnRegistrarUsuario" type="button" class="btn btn-sm btn-primary">Registrar</button>
+                </div>
+            </div>
+        </div>
     </div>
     <script src="JS/Login.js"></script>
     <script src="JS/Utilidades.js"></script>

@@ -2972,6 +2972,7 @@
     <Content Include="JS\LocComu.js" />
     <Content Include="JS\LocProvi.js" />
     <Content Include="JS\LocRegi.js" />
+    <Content Include="JS\Login.js" />
     <Content Include="JS\Productos.js" />
     <Content Include="JS\Proveedores.js" />
     <Content Include="JS\Utilidades.js" />

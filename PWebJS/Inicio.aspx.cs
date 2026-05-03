@@ -11,7 +11,22 @@ namespace PWebJS
     {
         protected void Page_Load(object sender, EventArgs e)
         {
+            if (!IsPostBack)
+            {
+                var nombre = Session["Nombre"] as string;
+                if (string.IsNullOrWhiteSpace(nombre))
+                {
+                    loginInvitacion.Visible = true;
+                    btnIniciarSesion.Visible = true;
+                    loginEstado.Visible = false;
+                    return;
+                }
 
+                loginEstado.InnerText = "Usuario conectado: " + nombre;
+                loginEstado.Visible = true;
+                loginInvitacion.Visible = false;
+                btnIniciarSesion.Visible = false;
+            }
         }
     }
 }

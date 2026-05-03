@@ -13,5 +13,10 @@ namespace PWebJS
 
     public partial class Inicio
     {
+        protected global::System.Web.UI.HtmlControls.HtmlGenericControl loginEstado;
+
+        protected global::System.Web.UI.HtmlControls.HtmlGenericControl loginInvitacion;
+
+        protected global::System.Web.UI.HtmlControls.HtmlAnchor btnIniciarSesion;
     }
 }
