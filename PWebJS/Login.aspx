@@ -18,18 +18,18 @@
 </head>
 <body>
     <div class="registration-form">
-        <form>
+        <form id="loginForm">
             <div class="form-icon">
                 <span><i class="bi bi-person-fill"></i></span>
             </div>
             <div class="form-group">
-                <input type="text" class="form-control item" id="username" placeholder="Usuario" value="Mario"/>
+                <input type="text" class="form-control item" id="username" placeholder="Usuario" />
             </div>
             <div class="form-group">
-                <input type="password" class="form-control item" id="password" placeholder="Contraseña" value="agustin"/>
+                <input type="password" class="form-control item" id="password" placeholder="Contraseña" />
             </div>
             <div class="form-group">
-                <button id="btnIniciarSesion" type="button" class="btn btn-block create-account">Iniciar Sesión</button>
+                <button id="btnIniciarSesion" type="submit" class="btn btn-block create-account">Iniciar Sesión</button>
             </div>
             <div class="form-group">
                 <button id="btnCrearCuenta" type="button" class="btn btn-block btn-secondary">Crear usuario</button>

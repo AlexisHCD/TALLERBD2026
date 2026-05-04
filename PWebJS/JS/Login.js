@@ -1,5 +1,5 @@
 $(document).ready(function () {
-    $('#btnIniciarSesion').on('click', function () {
+    function iniciarSesion() {
         var nombre = ($('#username').val() || '').trim();
         var pass = ($('#password').val() || '').trim();
 
@@ -10,8 +10,10 @@ $(document).ready(function () {
 
         var data = JSON.stringify({ Nombre: nombre, Pass: pass });
 
+        $.LoadingOverlay('show');
         AjaxPost('../Login.aspx/Ingresar', data,
             function (response) {
+                $.LoadingOverlay('hide');
                 if (response.estado) {
                     window.location.href = 'Inicio.aspx';
                 } else {
@@ -19,10 +21,20 @@ $(document).ready(function () {
                 }
             },
             function () {
+                $.LoadingOverlay('hide');
                 swal('Mensaje', 'No se pudo iniciar sesión', 'warning');
             },
             function () {
             });
+    }
+
+    $('#loginForm').on('submit', function (event) {
+        event.preventDefault();
+        iniciarSesion();
+    });
+
+    $('#btnIniciarSesion').on('click', function () {
+        iniciarSesion();
     });
 
     $('#btnCrearCuenta').on('click', function () {
