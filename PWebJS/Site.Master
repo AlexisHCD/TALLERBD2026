@@ -56,7 +56,7 @@
         <asp:ContentPlaceHolder ID="head" runat="server"></asp:ContentPlaceHolder>
     </head>
     <body>
-        <nav class="navbar navbar-expand-lg navbar-dark mb-2" style="background-color: #1F255E;">
+        <nav id="mainNavbar" runat="server" class="navbar navbar-expand-lg navbar-dark mb-2" style="background-color: #1F255E;">
             <a style="color: #E1742D;" class="navbar-brand" href="#">Sistema</a>
             <button class="navbar-toggler navbar-toggler-right collapsed" type="button" data-toggle="collapse" data-target="#navb" aria-expanded="false">
                 <span class="navbar-toggler-icon"></span>
@@ -101,14 +101,14 @@
             <script>
 
                function CerrarSesion() {
-                    AjaxGet("../WPInicio.aspx/CerrarSesion",
+                    AjaxPost("Inicio.aspx/CerrarSesion", "{}",
                         function (response) {
                             if (response.estado) {
-                                 window.location.href = 'WPLogin.aspx';
-                            } else {
+                                 window.location.href = 'Login.aspx';
                             }
                         },
                         function () {
+                            window.location.href = 'Login.aspx';
                         },
                         function () {
                         })

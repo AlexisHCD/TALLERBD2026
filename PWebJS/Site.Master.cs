@@ -11,7 +11,21 @@ namespace PWebJS
     {
         protected void Page_Load(object sender, EventArgs e)
         {
+            var ruta = Request.AppRelativeCurrentExecutionFilePath ?? string.Empty;
+            if (ruta.EndsWith("Login.aspx", StringComparison.OrdinalIgnoreCase))
+            {
+                if (mainNavbar != null)
+                {
+                    mainNavbar.Visible = false;
+                }
+                return;
+            }
 
+            if (Session["Nombre"] == null)
+            {
+                Response.Redirect("Login.aspx", true);
+                return;
+            }
         }
     }
 }

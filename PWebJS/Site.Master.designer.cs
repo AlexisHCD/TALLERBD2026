@@ -13,6 +13,7 @@ namespace PWebJS
 
     public partial class Site
     {
+        protected global::System.Web.UI.HtmlControls.HtmlGenericControl mainNavbar;
 
         /// <summary>
         /// Control head.

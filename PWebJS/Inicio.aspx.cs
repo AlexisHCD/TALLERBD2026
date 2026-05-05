@@ -4,6 +4,7 @@ using System.Linq;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
+using Entidad;
 
 namespace PWebJS
 {
@@ -26,6 +27,22 @@ namespace PWebJS
                 loginEstado.Visible = true;
                 loginInvitacion.Visible = false;
                 btnIniciarSesion.Visible = false;
+            }
+        }
+
+        [System.Web.Services.WebMethod(EnableSession = true)]
+        [System.Web.Script.Services.ScriptMethod(ResponseFormat = System.Web.Script.Services.ResponseFormat.Json)]
+        public static Respuesta<bool> CerrarSesion()
+        {
+            try
+            {
+                HttpContext.Current.Session.Clear();
+                HttpContext.Current.Session.Abandon();
+                return new Respuesta<bool>() { estado = true };
+            }
+            catch (Exception ex)
+            {
+                return new Respuesta<bool>() { estado = false, valor = ex.Message };
             }
         }
     }
