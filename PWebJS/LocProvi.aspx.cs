@@ -13,14 +13,33 @@ namespace PWebJS
 {
     public partial class LocProvi : System.Web.UI.Page
     {
+        /*
+            Code-behind de LocProvi.aspx.
+
+            Esta página se maneja principalmente desde JavaScript (JS/LocProvi.js) que consume estos WebMethods.
+            Funcionalidades típicas:
+            - Obtener listado de provincias (para la grilla)
+            - Obtener regiones (para el combo del modal)
+            - CRUD: ingresar, actualizar, eliminar
+
+            La capa Web se encarga de exponer los métodos y traducir errores.
+            La lógica/DB se delega a la capa Negocio (NLocPro, NLocReg).
+        */
+
         protected void Page_Load(object sender, EventArgs e)
         {
+            // Se deja vacío porque la carga de datos se hace por AJAX desde el JS.
         }
 
         [WebMethod(EnableSession = false)]
         [ScriptMethod(ResponseFormat = ResponseFormat.Json)]
         public static Respuesta<List<ELocPro>> Obtener()
         {
+            /*
+                Lista todas las provincias.
+                EnableSession = false: no requiere Session.
+                Se retorna como JSON para que el front-end arme la grilla.
+            */
             var respuesta = new Respuesta<List<ELocPro>>() { estado = false, objeto = new List<ELocPro>() };
             try
             {
@@ -40,6 +59,10 @@ namespace PWebJS
         [ScriptMethod(ResponseFormat = ResponseFormat.Json)]
         public static Respuesta<List<ELocReg>> ObtenerRegiones()
         {
+            /*
+                Trae regiones para llenar el combo del modal.
+                Esto permite asignar cada provincia a una región.
+            */
             var respuesta = new Respuesta<List<ELocReg>>() { estado = false, objeto = new List<ELocReg>() };
             try
             {
@@ -59,6 +82,10 @@ namespace PWebJS
         [ScriptMethod(ResponseFormat = ResponseFormat.Json)]
         public static Respuesta<bool> Ingresar(ELocPro obj)
         {
+            /*
+                Inserta una provincia.
+                El objeto llega desde el formulario del modal.
+            */
             try
             {
                 return NLocPro.Ingresar(obj);
@@ -73,6 +100,10 @@ namespace PWebJS
         [ScriptMethod(ResponseFormat = ResponseFormat.Json)]
         public static Respuesta<bool> Actualizar(ELocPro obj)
         {
+            /*
+                Actualiza una provincia.
+                Se espera que obj contenga IdPro y los campos editables.
+            */
             try
             {
                 return NLocPro.Actualizar(obj);
@@ -87,6 +118,10 @@ namespace PWebJS
         [ScriptMethod(ResponseFormat = ResponseFormat.Json)]
         public static Respuesta<bool> Eliminar(int IdPro)
         {
+            /*
+                Elimina una provincia.
+                Si tiene comunas asociadas, lo normal es que la BD no permita eliminarla.
+            */
             try
             {
                 return NLocPro.Eliminar(IdPro);
@@ -99,6 +134,12 @@ namespace PWebJS
 
         private static string ObtenerMensajeLocalidad(string mensaje, string entidad)
         {
+            /*
+                Convierte mensajes técnicos en mensajes más claros.
+                Revisa por:
+                - "nombre" duplicado
+                - errores de referencia/relación al eliminar
+            */
             if (string.IsNullOrWhiteSpace(mensaje))
             {
                 return "No fue posible guardar la " + entidad + ".";

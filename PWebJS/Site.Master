@@ -1,5 +1,14 @@
 ﻿<%@ Master Language="C#" AutoEventWireup="true" CodeBehind="Site.master.cs" Inherits="PWebJS.Site" %>
 
+<%--
+    MasterPage principal del sitio.
+    Define la estructura común para la mayoría de páginas (navbar, referencias a CSS/JS y un ContentPlaceHolder).
+
+    Las páginas que usan MasterPage (por ejemplo Inicio, Clientes, Productos, etc.) inyectan:
+    - Contenido extra en <head> usando ContentPlaceHolder "head"
+    - El contenido principal dentro de ContentPlaceHolder "ContentPlaceHolder1"
+--%>
+
 <!DOCTYPE html>
 
 <html>
@@ -8,6 +17,14 @@
         <title>Sistema</title>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <%--
+            Referencias globales del proyecto:
+            - CSS de Bootstrap y plugins (SweetAlert, FontAwesome, jQuery UI, DataTables)
+            - JS base: jQuery, Bootstrap y plugins
+
+            Esta Master incluye muchas dependencias porque varias pantallas comparten DataTables y alertas.
+        --%>
         <link href="Assets/Plugins/Bootstrap.4.5.2/bootstrap.min.css" rel="stylesheet" />
         <link href="Assets/Plugins/Sweetalert2/sweetalert.css" rel="stylesheet" />
         <link href="Assets/Plugins/Fontawesome-free-5.15.1-web/css/all.css" rel="stylesheet" />
@@ -22,14 +39,13 @@
         <script src="Assets/Plugins/sweetalert2/swal-compat.js"></script>
         <script src="Assets/Plugins/Fontawesome-free-5.15.1-web/JS/all.js"></script>
 
-   
-        <!-- STYLE DATATABLE -->
+        <%-- Estilos de DataTables y extensiones (responsive, rowReorder, checkboxes, buttons). --%>
         <link href="Assets/Plugins/Datatables/CSS/jquery.dataTables.min.css" rel="stylesheet" />
         <link href="Assets/Plugins/Datatables/CSS/rowReorder.dataTables.min.css" rel="stylesheet" />
         <link href="Assets/Plugins/Datatables/CSS/responsive.dataTables.min.css" rel="stylesheet" />
         <link href="Assets/Plugins/DataTables_checkboxes/CSS/dataTables.checkboxes.css" rel="stylesheet" />
 
-        <!-- JS DATATABLE -->
+        <%-- Scripts de DataTables y extensiones. --%>
         <script src="Assets/Plugins/Datatables/JS/jquery.dataTables.min.js"></script>
         <script src="Assets/Plugins/Datatables/Js/dataTables.rowReorder.min.js"></script>
         <script src="Assets/Plugins/Datatables/JS/dataTables.responsive.min.js"></script>
@@ -53,9 +69,18 @@
             }
         </style>
 
+        <%--
+            PlaceHolder para que cada página pueda agregar CSS/JS propios dentro de <head>.
+            Ej: scripts específicos de una vista, estilos puntuales, etc.
+        --%>
         <asp:ContentPlaceHolder ID="head" runat="server"></asp:ContentPlaceHolder>
     </head>
     <body>
+        <%--
+            Navbar principal.
+            Está marcada con runat="server" para que el code-behind pueda ocultarla/mostrarla si fuese necesario
+            (por ejemplo, en pantallas públicas como Login).
+        --%>
         <nav id="mainNavbar" runat="server" class="navbar navbar-expand-lg navbar-dark mb-2" style="background-color: #1F255E;">
             <a style="color: #E1742D;" class="navbar-brand" href="#">Sistema</a>
             <button class="navbar-toggler navbar-toggler-right collapsed" type="button" data-toggle="collapse" data-target="#navb" aria-expanded="false">
@@ -64,20 +89,25 @@
 
             <div class="navbar-collapse collapse" id="navb" style="">
             
-            <ul class="nav navbar-nav navbar-right" style="color:#fff">
+            <%--
+                Menú de navegación.
+                Incluye un dropdown para Localidad y accesos directos a módulos del sistema.
+            --%>
+             <ul class="nav navbar-nav navbar-right" style="color:#fff">
                 <li class="nav-item"><a class="nav-link" runat="server" href="#">/</a></li> 
                 <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                   Localidad
                 </a>
                 <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                    <div class="dropdown-divider"></div> <!-- Separador -->
+                     <%-- Separadores visuales dentro del dropdown. --%>
+                     <div class="dropdown-divider"></div>
                   <a class="dropdown-item" href="LocRegi.aspx">Región</a>
-                    <div class="dropdown-divider"></div> <!-- Separador -->
+                     <div class="dropdown-divider"></div>
                   <a class="dropdown-item" href="LocProvi.aspx">Provincia</a>
-                    <div class="dropdown-divider"></div> <!-- Separador -->
+                     <div class="dropdown-divider"></div>
                   <a class="dropdown-item" href="LocComu.aspx">Comuna</a>
-                    <div class="dropdown-divider"></div> <!-- Separador -->
+                     <div class="dropdown-divider"></div>
                 </div>
                 <li class="nav-item"><a class="nav-link" runat="server" href="#">/</a></li> 
                 <li class="nav-item"><a class="nav-link" href="Clientes.aspx">Clientes</a></li> 
@@ -87,19 +117,34 @@
                 <li class="nav-item"><a class="nav-link" href="Productos.aspx">Productos</a></li>
             </ul>
             <ul class="navbar-nav ml-auto">
+               <%-- Opción para salir: llama a una función JS que cierra la sesión y redirige a Login. --%>
               <li class="nav-item"><a class="nav-link" href="javascript:CerrarSesion();"><i class="bi bi-x"></i>Salir</a></li>
             </ul>
           </div>
         </nav>
 
+            <%--
+                Contenedor donde se renderiza el contenido de cada página.
+                ContentPlaceHolder1 es el espacio principal de la MasterPage.
+            --%>
             <div class="container-fluid">
               <asp:ContentPlaceHolder ID="ContentPlaceHolder1" runat="server">
               </asp:ContentPlaceHolder>
             </div>
+
+            <%--
+                Scripts compartidos:
+                - Utilidades.js: helpers como AjaxPost.
+                - LoadingOverlay: capa de "cargando" cuando se hacen peticiones.
+            --%>
             <script src="JS/Utilidades.js"></script>
             <script src="Assets/Plugins/Loadingoverlay/loadingoverlay.js"></script>
             <script>
 
+               <%--
+                    Función global para cerrar sesión.
+                    Llama al WebMethod Inicio.aspx/CerrarSesion y si resulta bien (o falla), redirige a Login.
+               --%>
                function CerrarSesion() {
                     AjaxPost("Inicio.aspx/CerrarSesion", "{}",
                         function (response) {

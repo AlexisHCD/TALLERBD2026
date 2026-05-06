@@ -1,4 +1,6 @@
+// Inicialización de la pantalla de login y acciones del usuario.
 $(document).ready(function () {
+    // Envía las credenciales al servidor.
     function iniciarSesion() {
         var nombre = ($('#username').val() || '').trim();
         var pass = ($('#password').val() || '').trim();
@@ -28,21 +30,25 @@ $(document).ready(function () {
             });
     }
 
+    // Permite iniciar sesión con Enter.
     $('#loginForm').on('submit', function (event) {
         event.preventDefault();
         iniciarSesion();
     });
 
+    // Iniciar sesión con botón.
     $('#btnIniciarSesion').on('click', function () {
         iniciarSesion();
     });
 
+    // Abre el modal para crear usuario.
     $('#btnCrearCuenta').on('click', function () {
         $('#TextNuevoUsuario').val('');
         $('#TextNuevaClave').val('');
         $('#modalUsuario').modal('show');
     });
 
+    // Registra un nuevo usuario en el sistema.
     $('#btnRegistrarUsuario').on('click', function () {
         var nombre = ($('#TextNuevoUsuario').val() || '').trim();
         var pass = ($('#TextNuevaClave').val() || '').trim();

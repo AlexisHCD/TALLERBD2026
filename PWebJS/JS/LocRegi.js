@@ -1,5 +1,6 @@
 ﻿window.__LocRegiLoaded = true;
 var table
+// Inicialización: carga datos y configura eventos de la vista.
 $(document).ready(function () {
     console.log('LocRegi.js loaded');
     try {
@@ -9,6 +10,7 @@ $(document).ready(function () {
         $('#debugRegion').text(e.message || e.toString()).show();
     }
 
+    // Abrir modal para crear una nueva región.
     $('#btnNuevo').on('click', function () {
         $('#textId').val('0');
         $('#TextNombre').val('');
@@ -16,6 +18,7 @@ $(document).ready(function () {
         $('#modalGrid').modal('show');
     });
 
+    // Editar una región desde la fila seleccionada.
     $('#Grid').on('click', '.btnEditar', function () {
         var row = $(this).closest('tr');
         var cells = row.find('td');
@@ -28,6 +31,7 @@ $(document).ready(function () {
         $('#modalGrid').modal('show');
     });
 
+    // Eliminar una región con confirmación.
     $('#Grid').on('click', '.btnEliminar', function () {
         var row = $(this).closest('tr');
         var cells = row.find('td');
@@ -70,6 +74,7 @@ $(document).ready(function () {
         });
     });
 
+    // Extraer detalles de error desde la respuesta del servidor.
     function obtenerDetalleError(xhr) {
         if (!xhr) {
             return null;
@@ -91,6 +96,7 @@ $(document).ready(function () {
         return xhr.statusText || null;
     }
 
+    // Mensajes amigables para eliminación con dependencias.
     function obtenerMensajeEliminacion(valor, entidad) {
         if (!valor) {
             return 'No se pudo eliminar la ' + entidad + '.';
@@ -104,6 +110,7 @@ $(document).ready(function () {
         return valor;
     }
 
+    // Guardar cambios (crear o actualizar).
     $('#btnGuardarCambios').on('click', function () {
         if (!validarFormulario()) {
             return;
@@ -145,6 +152,7 @@ $(document).ready(function () {
         });
     });
 
+    // Formato y limpieza del nombre de región.
     $('#TextNombre').on('input', function () {
         var text = $(this).val().replace(/[0-9]/g, '');
         var titleCasedText = text.replace(/\w\S*/g, function (txt) {
@@ -153,6 +161,7 @@ $(document).ready(function () {
         $(this).val(titleCasedText);
     });
 
+    // Validación rápida: evitar números al escribir.
     $('#TextNombre').on('keypress', function (event) {
         if (event.key >= '0' && event.key <= '9') {
             event.preventDefault();
@@ -160,6 +169,7 @@ $(document).ready(function () {
         }
     });
 
+    // Validaciones mínimas antes de enviar.
     function validarFormulario() {
         var nombre = $('#TextNombre').val().trim();
         if (nombre === '') {
@@ -173,6 +183,7 @@ $(document).ready(function () {
         return true;
     }
 
+    // Cargar la grilla desde el servidor y configurar DataTables.
     function cargarDatos() {
         console.log('LocRegi.cargarDatos start', { hasAjax: !!$.ajax, hasOverlay: !!$.LoadingOverlay });
         if ($.LoadingOverlay) {

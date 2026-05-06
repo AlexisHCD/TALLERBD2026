@@ -9,14 +9,30 @@ namespace PWebJS
 {
     public partial class Productos : System.Web.UI.Page
     {
+        /*
+            Code-behind de Productos.aspx.
+
+            Al igual que otras pantallas del sistema, el front-end (JS/Productos.js) consume estos WebMethods
+            para hacer el CRUD vía AJAX y trabajar con respuestas en JSON.
+
+            La capa Web solo expone endpoints y maneja errores básicos.
+            La lógica real (listar/ingresar/actualizar/eliminar) se delega a la capa Negocio (NProd).
+        */
+
         protected void Page_Load(object sender, EventArgs e)
         {
+            // La página se carga y luego el JavaScript se encarga de pedir los datos y llenar la tabla.
         }
 
         [WebMethod]
         [ScriptMethod(ResponseFormat = ResponseFormat.Json, UseHttpGet = true)]
         public static Respuesta<List<EProd>> Obtener()
         {
+            /*
+                Retorna el listado de productos.
+                UseHttpGet = true porque normalmente este método se consume como una consulta (GET).
+                Se devuelve un Respuesta<List<EProd>> para mantener un formato estándar en el front-end.
+            */
             var respuesta = new Respuesta<List<EProd>>() { estado = false, objeto = new List<EProd>() };
             try
             {
@@ -36,6 +52,11 @@ namespace PWebJS
         [ScriptMethod(ResponseFormat = ResponseFormat.Json)]
         public static Respuesta<bool> Ingresar(EProd obj)
         {
+            /*
+                Inserta un producto.
+                El objeto "obj" llega desde el modal (form) en Productos.aspx.
+                En caso de error, se retorna un mensaje más claro mediante ObtenerMensajeProducto.
+            */
             try
             {
                 return NProd.Ingresar(obj);
@@ -50,6 +71,10 @@ namespace PWebJS
         [ScriptMethod(ResponseFormat = ResponseFormat.Json)]
         public static Respuesta<bool> Actualizar(EProd obj)
         {
+            /*
+                Actualiza un producto existente.
+                Se espera que el obj contenga IdProd y el resto de campos.
+            */
             try
             {
                 return NProd.Actualizar(obj);
@@ -64,6 +89,10 @@ namespace PWebJS
         [ScriptMethod(ResponseFormat = ResponseFormat.Json)]
         public static Respuesta<bool> Eliminar(int IdProd)
         {
+            /*
+                Elimina un producto por Id.
+                El front-end normalmente lo llama desde la columna Acciones de la grilla.
+            */
             try
             {
                 return NProd.Eliminar(IdProd);
@@ -76,6 +105,10 @@ namespace PWebJS
 
         private static string ObtenerMensajeProducto(string mensaje)
         {
+            /*
+                Interpreta algunos mensajes de error comunes y los devuelve en un formato más amigable.
+                Esto ayuda a mostrar en pantalla errores que el usuario pueda entender.
+            */
             if (string.IsNullOrWhiteSpace(mensaje))
             {
                 return "No fue posible guardar el producto.";

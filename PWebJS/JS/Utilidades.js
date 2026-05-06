@@ -1,4 +1,5 @@
-﻿function AjaxPost(url, data, funcionexito, funcionerror, funcionmientras) {
+﻿// Envuelve un POST AJAX con callbacks de éxito, error y antes de enviar.
+function AjaxPost(url, data, funcionexito, funcionerror, funcionmientras) {
 
     jQuery.ajax({
         async: true,
@@ -20,6 +21,7 @@
 
 }
 
+// Envuelve un GET AJAX con callbacks de éxito, error y antes de enviar.
 function AjaxGet(url, funcionexito, funcionerror, funcionmientras) {
 
     jQuery.ajax({

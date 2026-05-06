@@ -1,7 +1,9 @@
 var table;
+// Inicialización de la vista: carga datos y configura eventos.
 $(document).ready(function () {
     cargarDatos();
 
+    // Formatea el nombre a Title Case.
     $('#TextNombre').on('input', function () {
         var texto = $(this).val();
         var titleCase = texto.replace(/\w\S*/g, function (txt) {
@@ -11,6 +13,7 @@ $(document).ready(function () {
     });
 });
 
+// Carga la grilla principal de productos.
 function cargarDatos() {
 
     if ($.fn.DataTable.isDataTable('#Grid')) {
@@ -54,6 +57,7 @@ function cargarDatos() {
         });
 }
 
+// Abre modal para nuevo producto.
 $('#btnNuevo').on('click', function () {
     $('#textId').val(0);
     $('#TextNombre').val('');
@@ -66,6 +70,7 @@ $('#btnNuevo').on('click', function () {
     $('#modalGrid').modal('show');
 });
 
+// Carga datos en modal para edición.
 $('#Grid tbody').on('click', 'button[class="btn btn-sm btn-primary mr-1"]', function () {
     var model = $(this).data('EProd');
 
@@ -81,6 +86,7 @@ $('#Grid tbody').on('click', 'button[class="btn btn-sm btn-primary mr-1"]', func
     $('#modalGrid').modal('show');
 });
 
+// Valida y guarda el producto (crear o actualizar).
 $('#btnGuardarCambios').on('click', function () {
     var request = {
         obj: {
@@ -122,6 +128,7 @@ $('#btnGuardarCambios').on('click', function () {
         });
 });
 
+// Elimina un producto con confirmación.
 $('#Grid tbody').on('click', 'button[class="btn btn-sm btn-danger"]', function () {
     var request = { IdProd: String($(this).data('EProd')) };
 

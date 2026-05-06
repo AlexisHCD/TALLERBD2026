@@ -1,4 +1,5 @@
 ﻿var table
+// Inicialización: carga datos y configura eventos de la vista.
 $(document).ready(function () {
     console.log('LocProvi.js loaded');
     try {
@@ -9,6 +10,7 @@ $(document).ready(function () {
         $('#debugProvi').text(e.message || e.toString()).show();
     }
 
+    // Abrir modal para crear una nueva provincia.
     $('#btnNuevo').on('click', function () {
         $('#textId').val('0');
         $('#ComboReg').val('');
@@ -17,10 +19,12 @@ $(document).ready(function () {
         $('#modalGrid').modal('show');
     });
 
+    // Placeholder para cambios de región (validación si aplica).
     $('#ComboReg').on('change', function () {
         // Actualizar validación al cambiar región
     });
 
+    // Editar una provincia desde la fila seleccionada.
     $('#Grid').on('click', '.btnEditar', function () {
         var row = $(this).closest('tr');
         var cells = row.find('td');
@@ -35,6 +39,7 @@ $(document).ready(function () {
         $('#modalGrid').modal('show');
     });
 
+    // Eliminar una provincia con confirmación.
     $('#Grid').on('click', '.btnEliminar', function () {
         var row = $(this).closest('tr');
         var cells = row.find('td');
@@ -77,6 +82,7 @@ $(document).ready(function () {
         });
     });
 
+    // Extraer detalles de error desde la respuesta del servidor.
     function obtenerDetalleError(xhr) {
         if (!xhr) {
             return null;
@@ -98,6 +104,7 @@ $(document).ready(function () {
         return xhr.statusText || null;
     }
 
+    // Mensajes amigables para eliminación con dependencias.
     function obtenerMensajeEliminacion(valor, entidad) {
         if (!valor) {
             return 'No se pudo eliminar la ' + entidad + '.';
@@ -111,6 +118,7 @@ $(document).ready(function () {
         return valor;
     }
 
+    // Guardar cambios (crear o actualizar).
     $('#btnGuardarCambios').on('click', function () {
         if (!validarFormulario()) {
             return;
@@ -154,6 +162,7 @@ $(document).ready(function () {
         });
     });
 
+    // Formato y limpieza del nombre de provincia.
     $('#TextNombre').on('input', function () {
         var text = $(this).val().replace(/[0-9]/g, '');
         var titleCasedText = text.replace(/\w\S*/g, function (txt) {
@@ -162,6 +171,7 @@ $(document).ready(function () {
         $(this).val(titleCasedText);
     });
 
+    // Validación rápida: evitar números al escribir.
     $('#TextNombre').on('keypress', function (event) {
         if (event.key >= '0' && event.key <= '9') {
             event.preventDefault();
@@ -169,6 +179,7 @@ $(document).ready(function () {
         }
     });
 
+    // Validaciones mínimas antes de enviar.
     function validarFormulario() {
         var nombre = $('#TextNombre').val().trim();
         var idReg = $('#ComboReg').val();
@@ -188,6 +199,7 @@ $(document).ready(function () {
         return true;
     }
 
+    // Cargar opciones de regiones en el combo.
     function cargarRegiones() {
         console.log('LocProvi.cargarRegiones start', { hasAjax: !!$.ajax, hasOverlay: !!$.LoadingOverlay });
         $.ajax({
@@ -210,6 +222,7 @@ $(document).ready(function () {
         });
     }
 
+    // Cargar la grilla desde el servidor y configurar DataTables.
     function cargarDatos() {
         console.log('LocProvi.cargarDatos start', { hasAjax: !!$.ajax, hasOverlay: !!$.LoadingOverlay });
         if ($.LoadingOverlay) {

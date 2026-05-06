@@ -1,8 +1,10 @@
 var table;
+// Inicialización de la vista: carga datos y configura eventos.
 $(document).ready(function () {
     cargarDatos();
     obtenerRegiones();
 
+    // Cambios de región: limpia combos dependientes y carga provincias.
     $('#ComboReg').change(function () {
         var idReg = parseInt($(this).val() || '0');
         limpiarCombo('#ComboPro', 'Seleccione Provincia');
@@ -12,6 +14,7 @@ $(document).ready(function () {
         }
     });
 
+    // Cambios de provincia: limpia comunas y carga las asociadas.
     $('#ComboPro').change(function () {
         var idPro = parseInt($(this).val() || '0');
         limpiarCombo('#ComboCom', 'Seleccione Comuna');
@@ -20,6 +23,7 @@ $(document).ready(function () {
         }
     });
 
+    // Formatea texto a Title Case.
     $('#TextNombre, #TextGiro').on('input', function () {
         var texto = $(this).val();
         var titleCase = texto.replace(/\w\S*/g, function (txt) {
@@ -28,6 +32,7 @@ $(document).ready(function () {
         $(this).val(titleCase);
     });
 
+    // Bloquea números en campos de solo letras.
     $('#TextNombre, #TextGiro').on('keypress', function (event) {
         if (event.key >= '0' && event.key <= '9') {
             event.preventDefault();
@@ -35,6 +40,7 @@ $(document).ready(function () {
         }
     });
 
+    // Permite solo números en teléfono.
     $('#TextTelefono').on('input', function () {
         var limpio = $(this).val().replace(/[^0-9]/g, '');
         $(this).val(limpio);
@@ -45,6 +51,7 @@ $(document).ready(function () {
         $(this).val(limpio);
     });
 
+    // Valida y formatea RUT al salir del input.
     $('#TextRut').on('blur', function () {
         var rut = ($(this).val() || '').trim();
         if (!rut) {
@@ -61,6 +68,7 @@ $(document).ready(function () {
     });
 });
 
+// Carga la grilla principal de clientes.
 function cargarDatos() {
 
     if ($.fn.DataTable.isDataTable('#Grid')) {
@@ -104,11 +112,13 @@ function cargarDatos() {
         });
 }
 
+// Limpia un combo y agrega la opción por defecto.
 function limpiarCombo(selector, texto) {
     $(selector).html('');
     $('<option>').attr({ value: '0' }).text(texto).appendTo(selector);
 }
 
+// Obtiene regiones para el combo.
 function obtenerRegiones() {
     limpiarCombo('#ComboReg', 'Seleccione Región');
 
@@ -129,6 +139,7 @@ function obtenerRegiones() {
         });
 }
 
+// Obtiene provincias según la región.
 function obtenerProvincias(idReg, seleccionado) {
     $.ajax({
         type: 'POST',
@@ -148,6 +159,7 @@ function obtenerProvincias(idReg, seleccionado) {
     });
 }
 
+// Obtiene comunas según la provincia.
 function obtenerComunas(idPro, seleccionado) {
     $.ajax({
         type: 'POST',
@@ -167,6 +179,7 @@ function obtenerComunas(idPro, seleccionado) {
     });
 }
 
+// Abre modal para nuevo cliente.
 $('#btnNuevo').on('click', function () {
     $('#textId').val(0);
     $('#TextNombre').val('');
@@ -181,6 +194,7 @@ $('#btnNuevo').on('click', function () {
     $('#modalGrid').modal('show');
 });
 
+// Carga datos en modal para edición.
 $('#Grid tbody').on('click', 'button[class="btn btn-sm btn-primary mr-1"]', function () {
     var model = $(this).data('ECliente');
 
@@ -208,6 +222,7 @@ $('#Grid tbody').on('click', 'button[class="btn btn-sm btn-primary mr-1"]', func
     $('#modalGrid').modal('show');
 });
 
+// Valida y guarda el cliente (crear o actualizar).
 $('#btnGuardarCambios').on('click', function () {
     var request = {
         obj: {
@@ -271,6 +286,7 @@ $('#btnGuardarCambios').on('click', function () {
         });
 });
 
+// Elimina un cliente con confirmación.
 $('#Grid tbody').on('click', 'button[class="btn btn-sm btn-danger"]', function () {
     var request = { IdP_Cli: String($(this).data('ECliente')) };
 
@@ -301,6 +317,7 @@ $('#Grid tbody').on('click', 'button[class="btn btn-sm btn-danger"]', function (
     });
 });
 
+// Valida RUT usando algoritmo módulo 11.
 function validarRut(rut) {
     try {
         var limpio = (rut || '').toUpperCase().replace(/\./g, '').replace(/-/g, '');
@@ -330,6 +347,7 @@ function validarRut(rut) {
     }
 }
 
+// Formatea RUT con puntos y guion.
 function formatoRut(rut) {
     var limpio = (rut || '').replace(/\./g, '').replace(/-/g, '');
     if (limpio.length < 2) {

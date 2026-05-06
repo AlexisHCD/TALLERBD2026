@@ -1,7 +1,14 @@
 ﻿<%@ Page Title="" Language="C#" MasterPageFile="~/Site.Master" AutoEventWireup="true" CodeBehind="LocProvi.aspx.cs" Inherits="PWebJS.LocProvi" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
+    <%--
+        Página de mantenimiento (CRUD) de Provincias.
+        - Muestra una tabla con las provincias.
+        - Tiene un modal para crear/editar.
+        - La lógica de interacción está en JS/LocProvi.js llamando WebMethods del code-behind.
+    --%>
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
+    <%-- Contenedor principal con Bootstrap. --%>
     <div class="container-fluid mt-4">
         <div class="row">
             <div class="col-sm-12">
@@ -12,6 +19,7 @@
                     <div class="card-body">
                         <div class="row mb-3">
                             <div class="col-sm-2">
+                                <%-- Botón para abrir el modal y crear una nueva provincia (manejado por JS). --%>
                                 <button id="btnNuevo" type="button" class="btn btn-sm btn-success">
                                     <i class="fas fa-plus"></i> Nuevo
                                 </button>
@@ -20,6 +28,10 @@
                         <hr />
                         <div class="row mt-3">
                             <div class="col-sm-12">
+                                <%--
+                                    Tabla donde se listan las provincias.
+                                    El <tbody> se llena dinámicamente desde el JavaScript.
+                                --%>
                                 <table id="Grid" class="table table-striped table-bordered nowrap" style="width:100%">
                                     <thead class="table-dark">
                                         <tr>
@@ -43,7 +55,7 @@
         </div>
     </div>
 
-    <!-- Modal CRUD -->
+    <%-- Modal (Bootstrap) para crear/editar provincias. --%>
     <div class="modal fade" id="modalGrid" tabindex="-1" role="dialog" aria-labelledby="modalTitle" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
@@ -55,6 +67,11 @@
                 </div>
                 <div class="modal-body">
                     <form id="formProvincia">
+                        <%--
+                            Id oculto:
+                            - 0 significa "nuevo"
+                            - otro valor significa "editar"
+                        --%>
                         <input id="textId" type="hidden" value="0" />
                         <div class="form-group">
                             <label for="ComboReg" class="form-label">Región:</label>
@@ -69,6 +86,7 @@
                     </form>
                 </div>
                 <div class="modal-footer">
+                    <%-- Cerrar oculta el modal. Guardar ejecuta la llamada AJAX desde el JS. --%>
                     <button type="button" class="btn btn-sm btn-secondary" data-dismiss="modal">Cerrar</button>
                     <button id="btnGuardarCambios" type="button" class="btn btn-sm btn-primary">Guardar Cambios</button>
                 </div>
@@ -76,10 +94,13 @@
         </div>
     </div>
 
+    <%-- Contenedor de depuración/errores para mostrar mensajes desde el JS. --%>
     <div id="debugProvi" class="alert alert-danger mt-2" style="display:none;"></div>
 
+    <%-- Script de prueba: deja una marca en consola para confirmar que la página cargó. --%>
     <script>
         console.log('LocProvi.aspx loaded');
     </script>
+    <%-- Script principal de la pantalla (grilla, eventos, CRUD, llamadas a WebMethods). --%>
     <script src="<%= ResolveUrl("~/JS/LocProvi.js") %>" onerror="console.error('No se pudo cargar JS/LocProvi.js');"></script>
 </asp:Content>
