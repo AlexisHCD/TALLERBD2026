@@ -119,8 +119,7 @@ namespace Datos
                 }
                 catch (Exception)
                 {
-                    // Si ocurre una excepción, la respuesta se marca como false.
-                    Respuesta = false;
+                    throw;
                 }
             }
             // Retorna si el ingreso fue exitoso o no.
@@ -162,8 +161,7 @@ namespace Datos
                 }
                 catch (Exception)
                 {
-                    // Falla la actualización en caso de error del entorno.
-                    Respuesta = false;
+                    throw;
                 }
             }
             // Devuelve la confirmación.

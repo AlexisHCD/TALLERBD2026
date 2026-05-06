@@ -146,17 +146,28 @@ $(document).ready(function () {
     });
 
     $('#TextNombre').on('input', function () {
-        var text = $(this).val();
+        var text = $(this).val().replace(/[0-9]/g, '');
         var titleCasedText = text.replace(/\w\S*/g, function (txt) {
             return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
         });
         $(this).val(titleCasedText);
     });
 
+    $('#TextNombre').on('keypress', function (event) {
+        if (event.key >= '0' && event.key <= '9') {
+            event.preventDefault();
+            Swal.fire('Validación', 'El nombre de la región solo admite letras', 'warning');
+        }
+    });
+
     function validarFormulario() {
         var nombre = $('#TextNombre').val().trim();
         if (nombre === '') {
-            Swal.fire('Validación', 'El nombre es requerido', 'warning');
+            Swal.fire('Validación', 'El nombre de la región es requerido', 'warning');
+            return false;
+        }
+        if (/\d/.test(nombre)) {
+            Swal.fire('Validación', 'El nombre de la región no debe contener números', 'warning');
             return false;
         }
         return true;

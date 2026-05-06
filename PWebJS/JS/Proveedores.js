@@ -31,12 +31,17 @@ $(document).ready(function () {
     $('#TextNombre, #TextGiro').on('keypress', function (event) {
         if (event.key >= '0' && event.key <= '9') {
             event.preventDefault();
-            swal('Mensaje', 'Solo se permiten letras', 'warning');
+            swal('Mensaje', 'Este campo solo admite letras', 'warning');
         }
     });
 
     $('#TextTelefono').on('input', function () {
         var limpio = $(this).val().replace(/[^0-9]/g, '');
+        $(this).val(limpio);
+    });
+
+    $('#TextRut').on('input', function () {
+        var limpio = $(this).val().replace(/[^0-9kK\.\-]/g, '');
         $(this).val(limpio);
     });
 
@@ -224,17 +229,28 @@ $('#btnGuardarCambios').on('click', function () {
     };
 
     if (!request.obj.Nombre || !request.obj.Rut || request.obj.IdReg === 0 || request.obj.IdPro === 0 || request.obj.IdCom === 0 || !request.obj.Direccion || !request.obj.Tel || !request.obj.Email || !request.obj.Giro || !request.obj.Descr) {
-        swal('Mensaje', 'Es necesario completar todos los campos', 'warning');
+        var faltantes = [];
+        if (!request.obj.Nombre) faltantes.push('Nombre');
+        if (!request.obj.Rut) faltantes.push('Rut');
+        if (request.obj.IdReg === 0) faltantes.push('Región');
+        if (request.obj.IdPro === 0) faltantes.push('Provincia');
+        if (request.obj.IdCom === 0) faltantes.push('Comuna');
+        if (!request.obj.Direccion) faltantes.push('Dirección');
+        if (!request.obj.Tel) faltantes.push('Teléfono');
+        if (!request.obj.Email) faltantes.push('Email');
+        if (!request.obj.Giro) faltantes.push('Giro');
+        if (!request.obj.Descr) faltantes.push('Descripción');
+        swal('Mensaje', 'Complete los campos: ' + faltantes.join(', '), 'warning');
         return;
     }
 
     if (!validarRut(request.obj.Rut)) {
-        swal('Mensaje', 'Rut Malo', 'warning');
+        swal('Mensaje', 'El RUT ingresado no es válido', 'warning');
         return;
     }
 
     if (!/^\S+@\S+\.\S+$/.test(request.obj.Email)) {
-        swal('Mensaje', 'Email inválido', 'warning');
+        swal('Mensaje', 'El email ingresado no es válido', 'warning');
         return;
     }
 
@@ -249,7 +265,7 @@ $('#btnGuardarCambios').on('click', function () {
                 $('#modalGrid').modal('hide');
                 swal(mensajeOk);
             } else {
-                swal('Oops!', response.valor || 'No fue posible guardar', 'warning');
+                swal('Oops!', response.valor || 'No fue posible guardar. Revise los datos ingresados.', 'warning');
             }
         },
         function () {

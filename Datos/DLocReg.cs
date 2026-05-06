@@ -99,8 +99,7 @@ namespace Datos
                 }
                 catch (Exception)
                 {
-                    // Caer fuera del contexto controlado fuerza respuesta con un valor restrictivo False.
-                    Respuesta = false;
+                    throw;
                 }
             }
             return Respuesta;
@@ -133,8 +132,7 @@ namespace Datos
                 }
                 catch (Exception)
                 {
-                    // Deniega progreso y pasa factor "false" a la presentación/negocio que solicitó.
-                    Respuesta = false;
+                    throw;
                 }
             }
             return Respuesta;
@@ -165,8 +163,7 @@ namespace Datos
                 }
                 catch (Exception)
                 {
-                    // Imposibilidad detectada cortando estado a uno no satisfactorio. (ej: dependencias en cascada).
-                    Respuesta = false;
+                    throw;
                 }
             }
             return Respuesta;

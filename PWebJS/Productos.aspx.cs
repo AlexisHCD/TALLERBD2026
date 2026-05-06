@@ -42,7 +42,7 @@ namespace PWebJS
             }
             catch (Exception ex)
             {
-                return new Respuesta<bool>() { estado = false, valor = ex.Message };
+                return new Respuesta<bool>() { estado = false, valor = ObtenerMensajeProducto(ex.Message) };
             }
         }
 
@@ -56,7 +56,7 @@ namespace PWebJS
             }
             catch (Exception ex)
             {
-                return new Respuesta<bool>() { estado = false, valor = ex.Message };
+                return new Respuesta<bool>() { estado = false, valor = ObtenerMensajeProducto(ex.Message) };
             }
         }
 
@@ -70,8 +70,24 @@ namespace PWebJS
             }
             catch (Exception ex)
             {
-                return new Respuesta<bool>() { estado = false, valor = ex.Message };
+                return new Respuesta<bool>() { estado = false, valor = ObtenerMensajeProducto(ex.Message) };
             }
+        }
+
+        private static string ObtenerMensajeProducto(string mensaje)
+        {
+            if (string.IsNullOrWhiteSpace(mensaje))
+            {
+                return "No fue posible guardar el producto.";
+            }
+
+            var texto = mensaje.ToLowerInvariant();
+            if (texto.Contains("nombre"))
+            {
+                return "El nombre del producto ya está registrado. Ingrese uno diferente.";
+            }
+
+            return mensaje;
         }
     }
 }

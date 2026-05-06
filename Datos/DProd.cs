@@ -85,7 +85,7 @@ namespace Datos
                 }
                 catch (Exception)
                 {
-                    Respuesta = false;
+                    throw;
                 }
             }
             return Respuesta;
@@ -115,7 +115,7 @@ namespace Datos
                 }
                 catch (Exception)
                 {
-                    Respuesta = false;
+                    throw;
                 }
             }
             return Respuesta;
@@ -138,7 +138,7 @@ namespace Datos
                 }
                 catch (Exception)
                 {
-                    Respuesta = false;
+                    throw;
                 }
             }
             return Respuesta;

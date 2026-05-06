@@ -146,10 +146,9 @@ namespace Datos
                     // Almacena en respuesta el estado booleano de si se logró concretar el registro.
                     Respuesta = Convert.ToBoolean(cmd.Parameters["Resultado"].Value);
                 }
-                catch (Exception)
+                catch (Exception ex)
                 {
-                    // Fallo o error de ejecución anula el proceso devolviendo falso.
-                    Respuesta = false;
+                    throw;
                 }
             }
             return Respuesta;
@@ -188,8 +187,7 @@ namespace Datos
                 }
                 catch (Exception)
                 {
-                    // Un error cambia el estado de la respuesta a un rotundo fallo.
-                    Respuesta = false;
+                    throw;
                 }
             }
             return Respuesta;

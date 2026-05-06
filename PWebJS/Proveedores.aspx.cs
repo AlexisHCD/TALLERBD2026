@@ -115,7 +115,7 @@ namespace PWebJS
             }
             catch (Exception ex)
             {
-                return new Respuesta<bool>() { estado = false, valor = ex.Message };
+                return new Respuesta<bool>() { estado = false, valor = ObtenerMensajeProveedor(ex.Message) };
             }
         }
 
@@ -129,8 +129,29 @@ namespace PWebJS
             }
             catch (Exception ex)
             {
-                return new Respuesta<bool>() { estado = false, valor = ex.Message };
+                return new Respuesta<bool>() { estado = false, valor = ObtenerMensajeProveedor(ex.Message) };
             }
+        }
+
+        private static string ObtenerMensajeProveedor(string mensaje)
+        {
+            if (string.IsNullOrWhiteSpace(mensaje))
+            {
+                return "No fue posible guardar el proveedor.";
+            }
+
+            var texto = mensaje.ToLowerInvariant();
+            if (texto.Contains("rut"))
+            {
+                return "El RUT ya está registrado. Ingrese uno diferente.";
+            }
+
+            if (texto.Contains("email"))
+            {
+                return "El email ya está registrado. Ingrese uno diferente.";
+            }
+
+            return mensaje;
         }
 
         [WebMethod]

@@ -46,7 +46,7 @@ namespace PWebJS
             }
             catch (Exception ex)
             {
-                return new Respuesta<bool>() { estado = false, valor = ex.ToString() };
+                return new Respuesta<bool>() { estado = false, valor = ObtenerMensajeLocalidad(ex.Message, "región") };
             }
         }
 
@@ -60,7 +60,7 @@ namespace PWebJS
             }
             catch (Exception ex)
             {
-                return new Respuesta<bool>() { estado = false, valor = ex.ToString() };
+                return new Respuesta<bool>() { estado = false, valor = ObtenerMensajeLocalidad(ex.Message, "región") };
             }
         }
 
@@ -74,8 +74,29 @@ namespace PWebJS
             }
             catch (Exception ex)
             {
-                return new Respuesta<bool>() { estado = false, valor = ex.ToString() };
+                return new Respuesta<bool>() { estado = false, valor = ObtenerMensajeLocalidad(ex.Message, "región") };
             }
+        }
+
+        private static string ObtenerMensajeLocalidad(string mensaje, string entidad)
+        {
+            if (string.IsNullOrWhiteSpace(mensaje))
+            {
+                return "No fue posible guardar la " + entidad + ".";
+            }
+
+            var texto = mensaje.ToLowerInvariant();
+            if (texto.Contains("nombre"))
+            {
+                return "El nombre de la " + entidad + " ya está registrado. Ingrese uno diferente.";
+            }
+
+            if (texto.Contains("foreign") || texto.Contains("reference") || texto.Contains("conflict"))
+            {
+                return "No se puede eliminar la " + entidad + " porque tiene registros asociados.";
+            }
+
+            return mensaje;
         }
     }
 }

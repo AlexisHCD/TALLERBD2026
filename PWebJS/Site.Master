@@ -80,9 +80,9 @@
                     <div class="dropdown-divider"></div> <!-- Separador -->
                 </div>
                 <li class="nav-item"><a class="nav-link" runat="server" href="#">/</a></li> 
-                <li class="nav-item"><a class="nav-link" href="Clientes.aspx">Cliente</a></li> 
+                <li class="nav-item"><a class="nav-link" href="Clientes.aspx">Clientes</a></li> 
                 <li class="nav-item"><a class="nav-link" runat="server" href="#">/</a></li> 
-                <li class="nav-item"><a class="nav-link" href="Proveedores.aspx">Proveedor</a></li>
+                <li class="nav-item"><a class="nav-link" href="Proveedores.aspx">Proveedores</a></li>
                 <li class="nav-item"><a class="nav-link" runat="server" href="#">/</a></li> 
                 <li class="nav-item"><a class="nav-link" href="Productos.aspx">Productos</a></li>
             </ul>

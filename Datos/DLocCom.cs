@@ -166,8 +166,7 @@ namespace Datos
                 }
                 catch (Exception)
                 {
-                    // Fallos se reflejarán retornando False.
-                    Respuesta = false;
+                    throw;
                 }
             }
             return Respuesta;
@@ -202,8 +201,7 @@ namespace Datos
                 }
                 catch (Exception)
                 {
-                    // Determina a False y notifica a las siguientes capas en su uso si hay detención de contexto.
-                    Respuesta = false;
+                    throw;
                 }
             }
             return Respuesta;
@@ -234,8 +232,7 @@ namespace Datos
                 }
                 catch (Exception)
                 {
-                    // Cualquier limitación o constrain foráneo cortará a "falso".
-                    Respuesta = false;
+                    throw;
                 }
             }
             return Respuesta;

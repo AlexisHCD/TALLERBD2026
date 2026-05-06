@@ -145,8 +145,7 @@ namespace Datos
                 }
                 catch (Exception)
                 {
-                    // Asigna su estatus final negando el suceso dado un bloqueo por excepción.
-                    Respuesta = false;
+                    throw;
                 }
             }
             return Respuesta;
@@ -181,8 +180,7 @@ namespace Datos
                 }
                 catch (Exception)
                 {
-                    // Errores imprevistos fuerzan denegación del acto negando el éxito lógico general.
-                    Respuesta = false;
+                    throw;
                 }
             }
             return Respuesta;
@@ -213,8 +211,7 @@ namespace Datos
                 }
                 catch (Exception)
                 {
-                    // La presencia de constrantes de interconexión con Comunas podría rechazar la acción.
-                    Respuesta = false;
+                    throw;
                 }
             }
             return Respuesta;
